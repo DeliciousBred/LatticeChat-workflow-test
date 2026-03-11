@@ -3,6 +3,7 @@
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useMemo, useRef } from 'react'
 import * as THREE from 'three'
+import { OrbitControls } from '@react-three/drei'
 
 function CryptoLattice() {
   const group = useRef<THREE.Group>(null!)
@@ -71,17 +72,21 @@ function CryptoLattice() {
     }
   }, [])
 
+  const lastFrame = useRef(0)
   useFrame(({ clock, camera }) => {
     const t = clock.getElapsedTime()
-  
-    group.current.position.y = Math.sin(t * 0.2) * 0.1
-  
-    const radius = 8 + Math.sin(t * 0.2) * 7
-    const angle = t * 0.1
-  
+
+    if (t - lastFrame.current < 1 / 40) return
+    lastFrame.current = t
+
+    group.current.position.y = Math.sin(t * 0.015) * 0.1
+
+    const radius = 5 + Math.sin(t * 0.1) * 3
+    const angle = t * 0.015
+
     camera.position.x = Math.cos(angle) * radius
     camera.position.z = Math.sin(angle) * radius
-  
+
     camera.lookAt(0, 0, 0)
   })
 
@@ -140,7 +145,7 @@ function CryptoLattice() {
 export default function Lattice() {
   return (
     <Canvas
-      camera={{ position: [0, 0, 12], fov: 80 }}
+      camera={{ position: [0, 0, 12], fov: 120 }}
       gl={{ antialias: false }}
       dpr={[1, 1.5]}
     >
