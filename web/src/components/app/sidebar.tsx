@@ -1,5 +1,12 @@
 import { useMemo, useState, type ReactNode } from 'react'
-import { MessageSquare, Phone, Settings, Users, Plus, CircleUserRound } from 'lucide-react'
+import {
+  HiOutlineChatBubbleOvalLeft,
+  HiOutlinePhone,
+  HiMiniUser,
+  HiMiniUserGroup,
+  HiMiniPlus,
+  HiOutlineCog6Tooth,
+} from 'react-icons/hi2'
 import { AnimatedThemeToggler } from '@/registry/magicui/animated-theme-toggler'
 
 type Section = 'chats' | 'calls' | 'settings'
@@ -10,9 +17,17 @@ type SidebarProps = {
 }
 
 const navItems: Array<{ key: Section; label: string; icon: ReactNode }> = [
-  { key: 'chats', label: 'Chats', icon: <MessageSquare className="size-5" /> },
-  { key: 'calls', label: 'Calls', icon: <Phone className="size-5" /> },
-  { key: 'settings', label: 'Settings', icon: <Settings className="size-5" /> },
+  {
+    key: 'chats',
+    label: 'Chats',
+    icon: <HiOutlineChatBubbleOvalLeft />,
+  },
+  { key: 'calls', label: 'Calls', icon: <HiOutlinePhone  /> },
+  {
+    key: 'settings',
+    label: 'Settings',
+    icon: <HiOutlineCog6Tooth />,
+  },
 ]
 
 export default function Sidebar({
@@ -36,7 +51,7 @@ export default function Sidebar({
           className="group relative flex size-12 items-center justify-center overflow-hidden rounded-2xl bg-linear-to-br from-(--lagoon) to-(--lagoon-deep) text-lg font-extrabold text-white shadow-[0_12px_26px_rgba(79,184,178,0.35)] transition hover:scale-105 dark:shadow-none"
           aria-label="Your profile"
         >
-          <CircleUserRound className="size-6 opacity-90 transition group-hover:scale-110" />
+        <HiMiniUser/>
           <span className="absolute inset-x-0 bottom-1 text-[10px] uppercase tracking-[0.08em] opacity-70">
             You
           </span>
@@ -47,7 +62,7 @@ export default function Sidebar({
           className="flex size-10 items-center justify-center rounded-2xl border border-(--chip-line) bg-(--chip-bg) text-(--sea-ink) shadow-[0_12px_24px_rgba(23,58,64,0.1)] transition hover:-translate-y-0.5 hover:bg-(--link-bg-hover) dark:shadow-none"
           aria-label="Start a new chat"
         >
-          <Plus className="size-5" />
+          <HiMiniPlus />
         </button>
       </div>
 
@@ -69,12 +84,16 @@ export default function Sidebar({
             >
               <span
                 className={`absolute -left-3 h-8 w-1.5 rounded-full transition ${
-                  isActive ? 'bg-(--lagoon)' : 'bg-transparent group-hover:bg-(--lagoon-deep)/60'
+                  isActive
+                    ? 'bg-(--lagoon)'
+                    : 'bg-transparent group-hover:bg-(--lagoon-deep)/60'
                 }`}
               />
               <div
                 className={`transition ${
-                  isActive ? 'scale-105 opacity-100' : 'opacity-80 group-hover:opacity-100'
+                  isActive
+                    ? 'scale-105 opacity-100'
+                    : 'opacity-80 group-hover:opacity-100'
                 }`}
               >
                 {item.icon}
@@ -87,8 +106,8 @@ export default function Sidebar({
       {/* Bottom rail: theme + version */}
       <div className="flex w-full flex-col items-center gap-2 pb-2">
         <AnimatedThemeToggler />
-        <div className="flex items-center gap-2 rounded-xl border border-(--line) bg-(--surface) px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-(--sea-ink)">
-          <span className="font-bold">Beta</span>
+        <div className="flex items-center gap-2 rounded-xl border border-(--line) bg-(--surface) px-3 py-1 text-[10px] font-semibold tracking-[0.12em] text-(--sea-ink)">
+          <span className="font-bold">BETA</span>
         </div>
       </div>
     </aside>

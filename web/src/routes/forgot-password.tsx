@@ -32,7 +32,8 @@ function ForgotPassword() {
 
         <div className="rounded-lg border border-zinc-800 bg-zinc-900/60 p-4 text-sm text-red-500 space-y-2">
           <p>
-            All of your messages will be deleted when you reset your password, but your account and contacts will remain intact.
+            All of your messages will be deleted when you reset your password,
+            but your account and contacts will remain intact.
           </p>
           <p className="text-xs text-zinc-500">
             If you remember your password, you can go back to sign in instead.
@@ -56,7 +57,9 @@ function ForgotPassword() {
             {message && (
               <p
                 className={`text-xs ${
-                  message.includes('valid') ? 'text-amber-300' : 'text-emerald-300'
+                  message.includes('valid')
+                    ? 'text-amber-300'
+                    : 'text-emerald-300'
                 }`}
               >
                 {message}
