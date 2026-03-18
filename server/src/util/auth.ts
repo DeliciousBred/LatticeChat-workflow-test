@@ -1,14 +1,24 @@
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
-import { bearer } from "better-auth/plugins";
+import { bearer, emailOTP } from "better-auth/plugins";
 import { ENV } from "./env";
 import mongoose from "mongoose";
 import type { Db } from "mongodb";
+import { sendVerificationEmail } from "./mailer";
 
 const baseURL = ENV.HOST + ":" + ENV.PORT;
 
 const auth = betterAuth({
-  plugins: [bearer()],
+  plugins: [
+    bearer(),
+    emailOTP({
+      async sendVerificationOTP({ email, otp, type }) {
+        if (type === "email-verification") {
+          await sendVerificationEmail(email, otp);
+        }
+      },
+    })
+  ],
   baseURL,
   database: mongodbAdapter(mongoose.connection as unknown as Db),
   emailAndPassword: { enabled: true },
