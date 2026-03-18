@@ -1,22 +1,23 @@
-import { createMongoClient } from "./database.js";
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
 import { bearer } from "better-auth/plugins";
 import { ENV } from "./env";
-
-const client = createMongoClient();
-const db = client.db();
+import mongoose from "mongoose";
+import type { Db } from "mongodb";
 
 const baseURL = ENV.HOST + ":" + ENV.PORT;
 
 const auth = betterAuth({
   plugins: [bearer()],
   baseURL,
-  database: mongodbAdapter(db, { client }),
+  database: mongodbAdapter(mongoose.connection as unknown as Db),
   emailAndPassword: { enabled: true },
   user: {
-    additionalFields: {},
-  },
+    modelName: "users",
+    fields: {
+      name: "username"
+    }
+  }
 });
 
 export default auth;
