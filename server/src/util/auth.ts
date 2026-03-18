@@ -1,10 +1,10 @@
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
 import { bearer, emailOTP } from "better-auth/plugins";
-import { ENV } from "./env";
+import { ENV } from "./env.js";
 import mongoose from "mongoose";
 import type { Db } from "mongodb";
-import {sendDuplicateEmailNotification, sendEmailVerificationOTP, sendForgetPasswordOTP} from "./mailer";
+import {sendDuplicateEmailNotification, sendEmailVerificationOTP, sendForgetPasswordOTP} from "./mailer.js";
 
 const baseURL = ENV.HOST + ":" + ENV.PORT;
 
