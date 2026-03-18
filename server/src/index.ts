@@ -13,7 +13,7 @@ const io = createIO(server);
 app.use(express.json());
 app.use("/api", apiRouter);
 
-server.listen(ENV.port, () => {
+server.listen(ENV.PORT, () => {
   console.log("Lattice backend now listening");
   console.log("Hello Andrew :)");
 });
