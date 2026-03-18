@@ -10,6 +10,7 @@ const envSchema = z.object({
   DB_NAME: z.string().nonempty(),
   DB_HOSTNAME: z.string().nonempty(),
   DB_PORT: z.string().nonempty(),
+  SENDGRID_API_KEY: z.string().nonempty(),
 });
 
 export const ENV = envSchema.parse({
@@ -21,4 +22,5 @@ export const ENV = envSchema.parse({
   DB_NAME: process.env.DB_NAME,
   DB_HOSTNAME: process.env.DB_HOSTNAME,
   DB_PORT: process.env.DB_PORT,
+  SENDGRID_API_KEY: process.env.SENDGRID_API_KEY
 });
