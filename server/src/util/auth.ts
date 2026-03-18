@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 import type { Db } from "mongodb";
 import {sendDuplicateEmailNotification, sendEmailVerificationOTP, sendForgetPasswordOTP} from "./mailer.js";
 
-const baseURL = ENV.HOST + ":" + ENV.PORT;
+const baseURL = "http://" + ENV.HOST + ":" + ENV.PORT;
 
 const auth = betterAuth({
   plugins: [
