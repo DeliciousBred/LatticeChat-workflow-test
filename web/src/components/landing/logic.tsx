@@ -3,6 +3,21 @@ import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import type { ZXCVBNFeedback } from 'zxcvbn'
 
+export function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value)
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value)
+    }, delay)
+
+    return () => {
+      clearTimeout(handler)
+    }
+  }, [value, delay])
+
+  return debouncedValue
+}
 
 export function useAuthLogic() {
   const [mode, setMode] = useState<'login' | 'signup'>('login')
@@ -17,7 +32,7 @@ export function useAuthLogic() {
   const [usernameAvailability, setUsernameAvailability] = useState<
     string | null
   >(null)
-  
+
   const [isCheckingEmail, setIsCheckingEmail] = useState(false)
   const [isCheckingUsername, setIsCheckingUsername] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
@@ -110,65 +125,56 @@ export function useAuthLogic() {
   const passwordsMatch =
     mode !== 'signup' || !confirmPassword ? true : confirmPassword === password
 
+  const debouncedEmail = useDebounce(email, 500)
+  const debouncedUsername = useDebounce(username, 500)
+
   useEffect(() => {
-    if (mode !== 'signup') {
+    if (mode !== 'signup' || !email) {
       setEmailAvailability(null)
       setIsCheckingEmail(false)
       return
     }
 
-    if (!email) {
-      setEmailAvailability(null)
+    if (email !== debouncedEmail) {
+      setIsCheckingEmail(true)
+      return
+    }
+
+    const trimmed = debouncedEmail.trim().toLowerCase()
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed) // ai written regex. placeholder-only
+
+    if (!isValidEmail) {
+      setEmailAvailability('Enter a valid email to check availability.')
       setIsCheckingEmail(false)
       return
     }
 
-    setIsCheckingEmail(true)
-    const timer = setTimeout(() => {
-      const trimmed = email.trim().toLowerCase()
-      const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed) // ai written regex. placeholder-only
-
-      if (!isValidEmail) {
-        setEmailAvailability('Enter a valid email to check availability.')
-        setIsCheckingEmail(false)
-        return
-      }
-
-      const looksTaken =
-        trimmed.endsWith('@taken.com') || trimmed.includes('taken@')
-      setEmailAvailability(
-        looksTaken ? 'Email appears taken.' : 'Email looks available.',
-      )
-      setIsCheckingEmail(false)
-    }, 500)
-
-    return () => clearTimeout(timer)
-  }, [mode, email])
+    const looksTaken =
+      trimmed.endsWith('@taken.com') || trimmed.includes('taken@')
+    setEmailAvailability(
+      looksTaken ? 'Email appears taken.' : 'Email looks available.',
+    )
+    setIsCheckingEmail(false)
+  }, [mode, email, debouncedEmail])
 
   useEffect(() => {
-    if (mode !== 'signup') {
+    if (mode !== 'signup' || !username) {
       setUsernameAvailability(null)
       setIsCheckingUsername(false)
       return
     }
 
-    if (!username) {
-      setUsernameAvailability(null)
-      setIsCheckingUsername(false)
+    if (username !== debouncedUsername) {
+      setIsCheckingUsername(true)
       return
     }
 
-    setIsCheckingUsername(true)
-    const timer = setTimeout(() => {
-      const looksTaken = username.trim().toLowerCase().includes('taken')
-      setUsernameAvailability(
-        looksTaken ? 'Username appears taken.' : 'Username looks available.',
-      )
-      setIsCheckingUsername(false)
-    }, 500)
-
-    return () => clearTimeout(timer)
-  }, [mode, username])
+    const looksTaken = debouncedUsername.trim().toLowerCase().includes('taken')
+    setUsernameAvailability(
+      looksTaken ? 'Username appears taken.' : 'Username looks available.',
+    )
+    setIsCheckingUsername(false)
+  }, [mode, username, debouncedUsername])
 
   useEffect(() => {
     const mql = window.matchMedia('(max-width: 767px)')
