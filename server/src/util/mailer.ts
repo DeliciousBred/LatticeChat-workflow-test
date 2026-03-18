@@ -26,7 +26,7 @@ const sendEmailVerificationOTP = async (receiverEmail: string, otp: string) => {
   sendEmailOTP(receiverEmail, otp, "Email Verification Code", otp => `<p>Verification Code: ${otp}</p>`);
 }
 
-const sendForgotPasswordOTP = async (receiverEmail: string, otp: string) => {
+const sendForgetPasswordOTP = async (receiverEmail: string, otp: string) => {
   sendEmailOTP(receiverEmail, otp, "Forgot Password Code", otp => `<p>Forgot Reset Code: ${otp}</p>`);
 }
 
@@ -39,4 +39,4 @@ const sendDuplicateEmailNotification = async (receiverEmail: string) => {
   });
 }
 
-export {sendEmailOTP, sendEmailVerificationOTP, sendDuplicateEmailNotification}
+export {sendEmailOTP, sendEmailVerificationOTP, sendForgetPasswordOTP, sendDuplicateEmailNotification}
