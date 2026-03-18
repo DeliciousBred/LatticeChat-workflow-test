@@ -29,6 +29,7 @@ const auth = betterAuth({
   database: mongodbAdapter(db, {client}),
   emailAndPassword: {
     enabled: true,
+    requireEmailVerification: true,
     onExistingUserSignUp: async ({user}, request) => {
       if (user.emailVerified) {
         await sendDuplicateEmailNotification(user.email)
