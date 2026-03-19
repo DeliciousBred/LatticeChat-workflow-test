@@ -1,11 +1,6 @@
 import { Schema } from "mongoose";
 
-export const UserSchema = new Schema({
-  name: {
-    type: String,
-    required: true,
-    unique: true,
-  },
+export const userSchema = new Schema({
   username: {
     type: String,
     required: true,
@@ -25,7 +20,7 @@ export const UserSchema = new Schema({
     type: Boolean,
     required: true,
     unique: true,
-    default: false
+    default: false,
   },
   phone: {
     type: String,
@@ -36,12 +31,12 @@ export const UserSchema = new Schema({
     type: Date,
     require: true,
     unique: true,
-    default: Date.now()
+    default: Date.now(),
   },
   updatedAt: {
     type: Date,
     require: true,
     unique: true,
-    default: Date.now()
+    default: Date.now(),
   },
 });
