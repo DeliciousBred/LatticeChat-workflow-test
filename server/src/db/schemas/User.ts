@@ -31,12 +31,12 @@ export const userSchema = new Schema({
     type: Date,
     require: true,
     unique: true,
-    default: Date.now(),
+    default: Date.now,
   },
   updatedAt: {
     type: Date,
     require: true,
     unique: true,
-    default: Date.now(),
+    default: Date.now,
   },
 });

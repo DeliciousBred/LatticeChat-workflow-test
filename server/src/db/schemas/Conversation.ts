@@ -1,19 +1,36 @@
 import { Schema, Types } from "mongoose";
 
 export const messageSchema = new Schema({
-  senderId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-  conversationId: {
+  sender: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  conversation: {
     type: Schema.Types.ObjectId,
     ref: "Conversation",
     required: true,
   },
-  content: { type: String, required: true, minLength: 1 },
+  content: {
+    type: String,
+    required: true,
+    minLength: 1,
+  },
+  createdAt: {
+    type: Date,
+    required: true,
+    default: Date.now,
+  },
 });
 
 export const conversationSchema = new Schema({
-  content: { type: String, required: true },
   members: {
-    type: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    type: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     validate: {
       // Ensure conversations always have atleast two members
       validator: (v: Types.ObjectId[]) => {
