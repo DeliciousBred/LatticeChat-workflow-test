@@ -8,3 +8,4 @@ export async function connectMongoDB()
   await mongoose.connect(uri);
 }
 
+export * from "./models";
