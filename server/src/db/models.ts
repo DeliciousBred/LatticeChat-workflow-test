@@ -1,4 +1,7 @@
 import { Model } from "mongoose";
-import { UserSchema } from "./schemas/User";
+import { userSchema } from "./schemas/User";
+import { conversationSchema, messageSchema } from "./schemas/Conversation";
 
-export const User = new Model("user", UserSchema);
+export const User = new Model("User", userSchema);
+export const Message = new Model("Message", messageSchema);
+export const Conversation = new Model("Conversation", conversationSchema);
