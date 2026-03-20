@@ -1,10 +1,14 @@
 import { ENV } from "./env";
 import mongoose from "mongoose";
 import { betterAuth } from "better-auth";
-import { bearer, emailOTP, username } from "better-auth/plugins";
+import { bearer, emailOTP, jwt, username } from "better-auth/plugins";
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
 import { connectMongoDB } from "../db";
-import { sendDuplicateEmailNotification, sendEmailVerificationOTP, sendForgetPasswordOTP } from "./mailer.js";
+import {
+  sendDuplicateEmailNotification,
+  sendEmailVerificationOTP,
+  sendForgetPasswordOTP,
+} from "./mailer";
 
 await connectMongoDB();
 const client = mongoose.connection.getClient();
@@ -14,6 +18,7 @@ const baseURL = "http://" + ENV.HOST + ":" + ENV.PORT;
 
 const auth = betterAuth({
   plugins: [
+    jwt(),
     username(),
     bearer(),
     emailOTP({
@@ -24,29 +29,29 @@ const auth = betterAuth({
           await sendForgetPasswordOTP(email, otp);
         }
       },
-    })
+    }),
   ],
   baseURL,
-  database: mongodbAdapter(db, {client}),
+  database: mongodbAdapter(db, { client }),
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
     onExistingUserSignUp: async ({ user }, request) => {
       if (user.emailVerified) {
-        await sendDuplicateEmailNotification(user.email)
+        await sendDuplicateEmailNotification(user.email);
       }
-    }
+    },
   },
   user: {
     modelName: "users",
     additionalFields: {
       phone: {
-        type: 'string',
+        type: "string",
         required: false,
-        input: true
-      }
-    }
-  }
+        input: true,
+      },
+    },
+  },
 });
 
 export default auth;
