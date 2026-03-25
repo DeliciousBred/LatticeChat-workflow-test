@@ -2,7 +2,6 @@ import { useState } from 'react'
 import {
   HiOutlineChatBubbleOvalLeft,
   HiOutlinePhone,
-
   HiOutlineCog6Tooth,
 } from 'react-icons/hi2'
 import { AnimatedThemeToggler } from '../../registry/magicui/animated-theme-toggler'
@@ -26,7 +25,7 @@ const navItems: NavItem[] = [
   { key: 'settings', label: 'Settings', icon: HiOutlineCog6Tooth },
 ]
 
-const ICON_SIZE = 24
+const ICON_SIZE = 22
 
 export default function Sidebar({
   defaultSection = 'chats',
@@ -40,9 +39,11 @@ export default function Sidebar({
   }
 
   return (
-    <aside className="flex h-screen w-20 flex-col items-center gap-3 border-r border-(--line) bg-(--surface-strong) px-3 py-4 shadow-[6px_0_22px_rgba(0,0,0,0.05)] backdrop-blur-md">
-
-      <div className="flex w-full flex-1 flex-col gap-1 pt-2">
+    <aside
+      className="flex h-screen w-20 flex-col items-center border-r border-(--line) bg-(--surface-strong)/90 px-3 py-4 backdrop-blur-xl"
+      aria-label="Primary"
+    >
+      <nav className="mt-1 flex w-full flex-1 flex-col items-center gap-1.5" aria-label="Main sections">
         {navItems.map((item) => {
           const isActive = active === item.key
           const Icon = item.icon
@@ -52,40 +53,46 @@ export default function Sidebar({
               key={item.key}
               type="button"
               onClick={() => handleSelect(item.key)}
-              className={`group relative flex h-12 items-center justify-center rounded-2xl text-[#7a7a7a] transition ${
-                isActive
-                  ? 'bg-[rgba(82,82,91,0.12)] text-[#52525b]'
-                  : 'hover:bg-(--link-bg-hover)'
-              }`}
+              aria-current={isActive ? 'page' : undefined}
               aria-label={item.label}
+              title={item.label}
+              className={[
+                'group relative grid h-12 w-12 place-items-center rounded-2xl',
+                'transition-all duration-200 ease-out',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500/80 focus-visible:ring-offset-2 focus-visible:ring-offset-(--surface-strong)',
+                isActive
+                  ? 'bg-zinc-500/15 text-(--text-primary) shadow-sm'
+                  : 'text-(--text-secondary) hover:bg-(--link-bg-hover) hover:text-(--text-primary)',
+              ].join(' ')}
             >
               <span
-                className={`absolute -left-3 h-8 w-1.5 rounded-full transition ${
-                  isActive
-                    ? 'bg-[#52525b]'
-                    : 'bg-transparent group-hover:bg-[rgba(82,82,91,0.5)]'
-                }`}
+                aria-hidden
+                className={[
+                  'pointer-events-none absolute -left-2.5 h-7 w-1 rounded-full transition-all duration-200',
+                  isActive ? 'bg-zinc-600 opacity-100 dark:bg-zinc-300' : 'bg-zinc-500/50 opacity-0 group-hover:opacity-100',
+                ].join(' ')}
               />
-
-              <div
-                className={`transition ${
-                  isActive
-                    ? 'scale-105 opacity-100'
-                    : 'opacity-80 group-hover:opacity-100'
-                }`}
-              >
-                <Icon size={ICON_SIZE} />
-              </div>
+              <Icon
+                size={ICON_SIZE}
+                className={[
+                  'transition-transform duration-200 ease-out',
+                  isActive ? 'scale-105' : 'group-hover:scale-[1.03]',
+                ].join(' ')}
+              />
+              <span className="sr-only">{item.label}</span>
             </button>
           )
         })}
-      </div>
+      </nav>
 
-      {/* Bottom rail */}
-      <div className="flex w-full flex-col items-center gap-2 pb-2">
+      <div className="mt-2 flex w-full flex-col items-center gap-2">
         <AnimatedThemeToggler />
-        <div className="flex items-center gap-2 rounded-xl border border-(--line) bg-(--surface) px-2 py-1 text-[10px] font-semibold tracking-[0.12em] text-[#7a7a7a]">
-          <span className="font-bold">BETA</span>
+        <div
+          className="rounded-xl border border-(--line) bg-(--surface) px-2.5 py-1 text-[10px] font-semibold tracking-[0.14em] text-(--text-secondary)"
+          aria-label="Application status: beta"
+          title="Application status: beta"
+        >
+          BETA
         </div>
       </div>
     </aside>

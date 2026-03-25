@@ -1,61 +1,121 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { Info, Phone, Video } from 'lucide-react'
 import type { Chat } from './layout'
 import { MessageList, type Message } from './messages'
 import { ChatInput } from './chat-input'
 
-export function ChatView({
-  chat,
-  onTogglePanel,
-}: {
+type ChatViewProps = {
   chat: Chat
   onTogglePanel: () => void
-}) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      role: 'assistant',
-      content: 'Hello 👋',
-    },
-  ])
+}
 
-  const handleSend = (text: string) => {
-    const newMessage: Message = {
-      id: crypto.randomUUID(),
-      role: 'user',
-      content: text,
+const INITIAL_GREETING = 'Hello 👋'
+
+const createMessage = (
+  role: Message['role'],
+  content: string,
+): Message => ({
+  id:
+    typeof crypto !== 'undefined' && 'randomUUID' in crypto
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+  role,
+  content,
+})
+
+export function ChatView({ chat, onTogglePanel }: ChatViewProps) {
+  const [messages, setMessages] = useState<Message[]>([
+    createMessage('assistant', INITIAL_GREETING),
+  ])
+  const pendingReplyTimerRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    setMessages([createMessage('assistant', INITIAL_GREETING)])
+
+    if (pendingReplyTimerRef.current !== null) {
+      window.clearTimeout(pendingReplyTimerRef.current)
+      pendingReplyTimerRef.current = null
     }
 
-    setMessages((prev) => [...prev, newMessage])
+    return () => {
+      if (pendingReplyTimerRef.current !== null) {
+        window.clearTimeout(pendingReplyTimerRef.current)
+        pendingReplyTimerRef.current = null
+      }
+    }
+  }, [chat.id])
 
-    // fake response
-    setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: crypto.randomUUID(),
-          role: 'assistant',
-          content: 'Got it.',
-        },
-      ])
-    }, 500)
-  }
+  const handleSend = useCallback((text: string) => {
+    const normalized = text.trim()
+    if (!normalized) return
+
+    setMessages((prev) => [...prev, createMessage('user', normalized)])
+
+    if (pendingReplyTimerRef.current !== null) {
+      window.clearTimeout(pendingReplyTimerRef.current)
+    }
+
+    pendingReplyTimerRef.current = window.setTimeout(() => {
+      setMessages((prev) => [...prev, createMessage('assistant', 'Bread.')])
+      pendingReplyTimerRef.current = null
+    }, 800)
+  }, [])
 
   return (
-    <div className="flex flex-1 flex-col">
-      {/* Header */}
-      <div className="flex items-center justify-between border-b border-(--line) p-4">
-        <span>{chat.user.name}</span>
+    <section
+      className="flex flex-1 flex-col overflow-hidden"
+      aria-label={`Conversation with ${chat.user.name}`}
+    >
+      <header className="border-b border-(--line) bg-(--surface) px-4 py-3">
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <h2 className="truncate text-sm font-semibold text-(--text-primary)">
+              {chat.user.name}
+            </h2>
+            <p className="truncate text-xs text-(--text-secondary)">
+              End-to-end encrypted conversation
+            </p>
+          </div>
 
-        <button onClick={onTogglePanel} className="text-xs">
-          Toggle Info
-        </button>
-      </div>
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-(--text-secondary) transition-colors hover:bg-(--link-bg-hover) hover:text-(--text-primary) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--line)"
+              aria-label="Start voice call"
+              title="Voice call"
+            >
+              <Phone size={16} />
+            </button>
 
-      {/* Messages */}
+            <button
+              type="button"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-(--text-secondary) transition-colors hover:bg-(--link-bg-hover) hover:text-(--text-primary) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--line)"
+              aria-label="Start video call"
+              title="Video call"
+            >
+              <Video size={16} />
+            </button>
+
+            <button
+              type="button"
+              onClick={onTogglePanel}
+              className="inline-flex h-9 items-center gap-1 rounded-lg px-2 text-(--text-secondary) transition-colors hover:bg-(--link-bg-hover) hover:text-(--text-primary) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--line)"
+              aria-label="Toggle user info panel"
+              aria-pressed={false}
+              title="Toggle info"
+            >
+              <Info size={16} />
+              <span className="text-xs font-medium">Info</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
       <MessageList messages={messages} />
 
-      {/* Input */}
-      <ChatInput onSend={handleSend} />
-    </div>
+      <div className="border-t border-(--line) bg-(--surface)">
+        <ChatInput onSend={handleSend} />
+      </div>
+    </section>
   )
 }

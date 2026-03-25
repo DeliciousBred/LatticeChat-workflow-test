@@ -1,20 +1,14 @@
 import type { Message } from './messages'
+import { MessageBubble as SharedMessageBubble } from './messages'
 
-export function MessageBubble({ message }: { message: Message }) {
-  const isUser = message.role === 'user'
+type MessageBubbleProps = {
+  message: Message
+}
 
-  return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
-      <div
-        className={`
-          max-w-[70%] rounded-2xl px-4 py-2 text-sm
-          ${isUser
-            ? 'bg-[#5a9fd3] text-white'
-            : 'bg-[#787878] text-white'}
-        `}
-      >
-        {message.content}
-      </div>
-    </div>
-  )
+/**
+ * Thin wrapper that delegates rendering to the shared message bubble
+ * implementation in `messages.tsx` to keep visuals and behavior consistent.
+ */
+export function MessageBubble({ message }: MessageBubbleProps) {
+  return <SharedMessageBubble message={message} />
 }

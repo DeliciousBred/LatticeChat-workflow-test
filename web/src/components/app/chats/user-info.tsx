@@ -1,50 +1,103 @@
-import {
-  CardContainer,
-  CardBody,
-  CardItem,
-} from '../../../components/ui/3d-card'
-import anonImage from '../../images/anonymous.png'
+import { CalendarDays, Circle, Shield } from 'lucide-react'
 
-export function UserInfoPanel({
-  user,
-}: {
-  user: { name: string; avatar: string }
-}) {
+type User = {
+  name: string
+  avatar: string
+}
+
+type UserInfoPanelProps = {
+  user: User
+}
+
+const toInitials = (name: string) => {
+  const parts = name.trim().split(/\s+/).filter(Boolean)
+  if (parts.length === 0) return 'U'
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
+  return `${parts[0][0] ?? ''}${parts[1][0] ?? ''}`.toUpperCase()
+}
+
+export function UserInfoPanel({ user }: UserInfoPanelProps) {
+  const initials = toInitials(user.name)
+
   return (
-    <aside className="sticky top-0 self-start h-screen border-l border-(--line) bg-(--surface) p-2">
-      {' '}
-      <CardContainer className="inter-var">
-        <CardBody className="bg-gray-50 relative group/card dark:bg-black border w-full h-full max-w-sm rounded-xl p-4">
-          <CardItem
-            translateZ="10"
-            className="text-xl font-bold text-neutral-600 dark:text-white"
-          >
-            {user.name}
-          </CardItem>
-          <CardItem
-            translateZ="20"
-            rotateX={0}
-            rotateZ={0}
-            className="w-full mt-4"
-          >
-            <img
-              src={anonImage}
-              height="100"
-              width="100"
-              className="h-auto w-auto object-cover rounded-xl group-hover/card:shadow-xl"
-              alt="thumbnail"
-            />
-          </CardItem>
+    <aside className="h-full border-l border-(--line) bg-(--surface) p-4">
+      <div className="flex h-full flex-col gap-4">
+        <header className="rounded-2xl border border-(--line) bg-(--surface-strong) p-4">
+          <div className="flex items-start gap-3">
+            <div className="relative shrink-0">
+              {user.avatar ? (
+                <img
+                  src={user.avatar}
+                  alt={`${user.name} avatar`}
+                  className="size-14 rounded-full object-cover ring-1 ring-(--line)"
+                />
+              ) : (
+                <div className="grid size-14 place-items-center rounded-full bg-zinc-700 text-sm font-semibold text-white ring-1 ring-(--line)">
+                  {initials}
+                </div>
+              )}
+              <span
+                className="absolute -bottom-0.5 -right-0.5 inline-flex size-3 rounded-full border-2 border-(--surface-strong) bg-emerald-500"
+                aria-label="Online"
+                title="Online"
+              />
+            </div>
 
-          <CardItem
-            as="p"
-            translateZ="10"
-            className="text-neutral-500 text-sm max-w-sm mt-2 dark:text-neutral-300"
-          >
-            Account created on
-          </CardItem>
-        </CardBody>
-      </CardContainer>
+            <div className="min-w-0">
+              <h2 className="truncate text-sm font-semibold text-(--fg)">
+                {user.name}
+              </h2>
+              <p className="mt-1 truncate text-xs text-(--text-secondary)">
+                Private conversation
+              </p>
+            </div>
+          </div>
+        </header>
+
+        <section className="rounded-2xl border border-(--line) bg-(--surface-strong) p-4">
+          <h3 className="text-xs font-semibold uppercase tracking-wide text-(--text-secondary)">
+            Profile
+          </h3>
+
+          <dl className="mt-3 space-y-3">
+            <div className="flex items-center justify-between gap-2">
+              <dt className="flex items-center gap-2 text-xs text-(--text-secondary)">
+                <CalendarDays size={14} />
+                Joined
+              </dt>
+              <dd className="text-xs font-medium text-(--fg)">Recently</dd>
+            </div>
+
+            <div className="flex items-center justify-between gap-2">
+              <dt className="flex items-center gap-2 text-xs text-(--text-secondary)">
+                <Shield size={14} />
+                Trust level
+              </dt>
+              <dd className="text-xs font-medium text-(--fg)">Verified</dd>
+            </div>
+
+            <div className="flex items-center justify-between gap-2">
+              <dt className="flex items-center gap-2 text-xs text-(--text-secondary)">
+                <Circle size={10} className="fill-current text-emerald-500" />
+                Status
+              </dt>
+              <dd className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                Active now
+              </dd>
+            </div>
+          </dl>
+        </section>
+
+        <section className="rounded-2xl border border-(--line) bg-(--surface-strong) p-4">
+          <h3 className="text-xs font-semibold uppercase tracking-wide text-(--text-secondary)">
+            Safety
+          </h3>
+          <p className="mt-2 text-xs leading-5 text-(--text-secondary)">
+            End-to-end encrypted context is enabled for this conversation.
+            Messages are protected in transit and at rest.
+          </p>
+        </section>
+      </div>
     </aside>
   )
 }
