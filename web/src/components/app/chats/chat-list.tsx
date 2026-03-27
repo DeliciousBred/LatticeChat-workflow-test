@@ -73,13 +73,6 @@ const ChatRow = memo(function ChatRow({
           Tap to open conversation
         </p>
       </div>
-
-      {isSelected && (
-        <span
-          className="h-2 w-2 rounded-full bg-emerald-400"
-          aria-hidden="true"
-        />
-      )}
     </button>
   )
 })

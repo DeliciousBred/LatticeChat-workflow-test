@@ -42,7 +42,7 @@ export const MessageBubble = memo(function MessageBubble({
         className={`${bubbleBaseClass} ${bubbleClass}`}
         aria-label={`${message.role} message`}
       >
-        <p className="whitespace-pre-wrap break-words">{message.content}</p>
+        <p className="whitespace-pre-wrap wrap-break-word">{message.content}</p>
       </article>
     </li>
   )

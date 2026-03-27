@@ -4,15 +4,6 @@ import { EncryptedText } from '../../ui/encrypted-text'
 export function EmptyState() {
   return (
     <div className="relative flex h-full w-full items-center justify-center overflow-hidden">
-      {/* Ambient background layers */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(56,189,248,0.12),transparent_40%),radial-gradient(circle_at_80%_80%,rgba(168,85,247,0.12),transparent_40%)]"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,transparent,rgba(0,0,0,0.05))] dark:bg-[linear-gradient(to_bottom,transparent,rgba(255,255,255,0.03))]"
-      />
 
       <div className="relative z-10 mx-auto flex w-full max-w-xl flex-col items-center px-8 py-12 text-center">
         {/* Icon badge */}

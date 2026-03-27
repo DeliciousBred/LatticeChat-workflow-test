@@ -16,6 +16,7 @@ type NavItem = {
 
 type SidebarProps = {
   defaultSection?: Section
+  activeSection?: Section
   onSelectSection?: (section: Section) => void
 }
 
@@ -29,12 +30,15 @@ const ICON_SIZE = 22
 
 export default function Sidebar({
   defaultSection = 'chats',
+  activeSection,
   onSelectSection,
 }: SidebarProps) {
   const [active, setActive] = useState<Section>(defaultSection)
 
   const handleSelect = (key: Section) => {
-    setActive(key)
+    if (activeSection === undefined) {
+      setActive(key)
+    }
     onSelectSection?.(key)
   }
 
@@ -45,7 +49,7 @@ export default function Sidebar({
     >
       <nav className="mt-1 flex w-full flex-1 flex-col items-center gap-1.5" aria-label="Main sections">
         {navItems.map((item) => {
-          const isActive = active === item.key
+          const isActive = (activeSection ?? active) === item.key
           const Icon = item.icon
 
           return (

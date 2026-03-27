@@ -53,7 +53,7 @@ export function useAuthLogic() {
         email,
         password,
         name: username,
-        callbackURL: '/dashboard',
+        callbackURL: '/app',
       },
       {
         onRequest: (ctx) => {
@@ -65,6 +65,7 @@ export function useAuthLogic() {
         onError: (ctx) => {
           // display the error message
           alert(ctx.error.message);
+          setIsPending(false);
         },
       },
     );
@@ -77,7 +78,7 @@ export function useAuthLogic() {
       {
         email,
         password,
-        callbackURL: '/dashboard',
+        callbackURL: '/app',
       },
       {
         onRequest: (ctx) => {
