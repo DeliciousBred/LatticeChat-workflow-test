@@ -1,113 +1,102 @@
-import { useMemo, useState, type ReactNode } from 'react'
+import { useState } from 'react'
 import {
   HiOutlineChatBubbleOvalLeft,
   HiOutlinePhone,
-  HiMiniUser,
-  HiMiniUserGroup,
-  HiMiniPlus,
   HiOutlineCog6Tooth,
 } from 'react-icons/hi2'
-import { AnimatedThemeToggler } from '@/registry/magicui/animated-theme-toggler'
+import { AnimatedThemeToggler } from '../../registry/magicui/animated-theme-toggler'
 
 type Section = 'chats' | 'calls' | 'settings'
 
+type NavItem = {
+  key: Section
+  label: string
+  icon: React.ComponentType<{ size?: number; className?: string }>
+}
+
 type SidebarProps = {
   defaultSection?: Section
+  activeSection?: Section
   onSelectSection?: (section: Section) => void
 }
 
-const navItems: Array<{ key: Section; label: string; icon: ReactNode }> = [
-  {
-    key: 'chats',
-    label: 'Chats',
-    icon: <HiOutlineChatBubbleOvalLeft />,
-  },
-  { key: 'calls', label: 'Calls', icon: <HiOutlinePhone  /> },
-  {
-    key: 'settings',
-    label: 'Settings',
-    icon: <HiOutlineCog6Tooth />,
-  },
+const navItems: NavItem[] = [
+  { key: 'chats', label: 'Chats', icon: HiOutlineChatBubbleOvalLeft },
+  { key: 'calls', label: 'Calls', icon: HiOutlinePhone },
+  { key: 'settings', label: 'Settings', icon: HiOutlineCog6Tooth },
 ]
+
+const ICON_SIZE = 22
 
 export default function Sidebar({
   defaultSection = 'chats',
+  activeSection,
   onSelectSection,
 }: SidebarProps) {
   const [active, setActive] = useState<Section>(defaultSection)
-  const items = useMemo(() => navItems, [])
 
   const handleSelect = (key: Section) => {
-    setActive(key)
+    if (activeSection === undefined) {
+      setActive(key)
+    }
     onSelectSection?.(key)
   }
 
   return (
-    <aside className="flex h-screen w-20.5 flex-col items-center gap-3 border-r border-(--line) bg-(--surface-strong) px-3 py-4 shadow-[6px_0_22px_rgba(0,0,0,0.05)] backdrop-blur-md">
-      {/* Top rail: avatar + new chat */}
-      <div className="flex w-full flex-col items-center gap-3">
-        <button
-          type="button"
-          className="group relative flex size-12 items-center justify-center overflow-hidden rounded-2xl bg-linear-to-br from-(--lagoon) to-(--lagoon-deep) text-lg font-extrabold text-white shadow-[0_12px_26px_rgba(79,184,178,0.35)] transition hover:scale-105 dark:shadow-none"
-          aria-label="Your profile"
-        >
-        <HiMiniUser/>
-          <span className="absolute inset-x-0 bottom-1 text-[10px] uppercase tracking-[0.08em] opacity-70">
-            You
-          </span>
-        </button>
+    <aside
+      className="flex h-screen w-20 flex-col items-center border-r border-(--line) bg-(--surface-strong)/90 px-3 py-4 backdrop-blur-xl"
+      aria-label="Primary"
+    >
+      <nav className="mt-1 flex w-full flex-1 flex-col items-center gap-1.5" aria-label="Main sections">
+        {navItems.map((item) => {
+          const isActive = (activeSection ?? active) === item.key
+          const Icon = item.icon
 
-        <button
-          type="button"
-          className="flex size-10 items-center justify-center rounded-2xl border border-(--chip-line) bg-(--chip-bg) text-(--sea-ink) shadow-[0_12px_24px_rgba(23,58,64,0.1)] transition hover:-translate-y-0.5 hover:bg-(--link-bg-hover) dark:shadow-none"
-          aria-label="Start a new chat"
-        >
-          <HiMiniPlus />
-        </button>
-      </div>
-
-      {/* Middle rail: nav items */}
-      <div className="flex w-full flex-1 flex-col gap-1 pt-2">
-        {items.map((item) => {
-          const isActive = active === item.key
           return (
             <button
               key={item.key}
               type="button"
               onClick={() => handleSelect(item.key)}
-              className={`group relative flex h-12 items-center justify-center rounded-2xl text-(--sea-ink) transition ${
-                isActive
-                  ? 'bg-(--lagoon)/15 text-(--lagoon-deep) shadow-none dark:text-(--lagoon)'
-                  : 'hover:bg-(--link-bg-hover)'
-              }`}
+              aria-current={isActive ? 'page' : undefined}
               aria-label={item.label}
+              title={item.label}
+              className={[
+                'group relative grid h-12 w-12 place-items-center rounded-2xl',
+                'transition-all duration-200 ease-out',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500/80 focus-visible:ring-offset-2 focus-visible:ring-offset-(--surface-strong)',
+                isActive
+                  ? 'bg-zinc-500/15 text-(--text-primary) shadow-sm'
+                  : 'text-(--text-secondary) hover:bg-(--link-bg-hover) hover:text-(--text-primary)',
+              ].join(' ')}
             >
               <span
-                className={`absolute -left-3 h-8 w-1.5 rounded-full transition ${
-                  isActive
-                    ? 'bg-(--lagoon)'
-                    : 'bg-transparent group-hover:bg-(--lagoon-deep)/60'
-                }`}
+                aria-hidden
+                className={[
+                  'pointer-events-none absolute -left-2.5 h-7 w-1 rounded-full transition-all duration-200',
+                  isActive ? 'bg-zinc-600 opacity-100 dark:bg-zinc-300' : 'bg-zinc-500/50 opacity-0 group-hover:opacity-100',
+                ].join(' ')}
               />
-              <div
-                className={`transition ${
-                  isActive
-                    ? 'scale-105 opacity-100'
-                    : 'opacity-80 group-hover:opacity-100'
-                }`}
-              >
-                {item.icon}
-              </div>
+              <Icon
+                size={ICON_SIZE}
+                className={[
+                  'transition-transform duration-200 ease-out',
+                  isActive ? 'scale-105' : 'group-hover:scale-[1.03]',
+                ].join(' ')}
+              />
+              <span className="sr-only">{item.label}</span>
             </button>
           )
         })}
-      </div>
+      </nav>
 
-      {/* Bottom rail: theme + version */}
-      <div className="flex w-full flex-col items-center gap-2 pb-2">
+      <div className="mt-2 flex w-full flex-col items-center gap-2">
         <AnimatedThemeToggler />
-        <div className="flex items-center gap-2 rounded-xl border border-(--line) bg-(--surface) px-3 py-1 text-[10px] font-semibold tracking-[0.12em] text-(--sea-ink)">
-          <span className="font-bold">BETA</span>
+        <div
+          className="rounded-xl border border-(--line) bg-(--surface) px-2.5 py-1 text-[10px] font-semibold tracking-[0.14em] text-(--text-secondary)"
+          aria-label="Application status: beta"
+          title="Application status: beta"
+        >
+          BETA
         </div>
       </div>
     </aside>

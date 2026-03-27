@@ -3,8 +3,8 @@ import { lazy, Suspense } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ShineBorder } from '@/components/ui/shine-border'
 const LatticeAnimation = lazy(() => import('@/components/ui/lattice'))
-import Label from '../components/landing/label'
-import { useAuthLogic } from '../components/landing/logic'
+import Label from '../components/index/label'
+import { useAuthLogic } from '../components/index/logic'
 
 export default function Auth() {
   // this is the brain of the auth page that has all of the functions api developer :) ily
@@ -165,14 +165,14 @@ export default function Auth() {
                         className={`mt-2 rounded-lg border px-3 py-2 text-xs ${
                           isPasswordStrong
                             ? 'border-emerald-500/40 bg-emerald-500/5 text-emerald-300'
-                            : 'border-amber-500/40 bg-amber-500/5 text-amber-200'
+                            : 'border-rose-500/40 bg-rose-500/5 text-rose-200'
                         }`}
                       >
                         <p className="font-mono">
                           Password strength: {passwordStrength.label}
                         </p>
                         {!isPasswordStrong && (
-                          <p className="text-[11px] text-amber-300/90">
+                          <p className="text-[11px] text-rose-300/90">
                             Use 12+ chars with upper, lower, numbers, and
                             symbols.<br></br>
                           </p>
