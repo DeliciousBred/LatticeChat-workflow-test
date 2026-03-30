@@ -28,7 +28,7 @@ jobs:
         run: yarn install --immutable
 
       - name: Build Shared
-        run: yarn workspace shared build
+        run: yarn workspace @latticechat/shared build
 
       - name: Build Backend
         run: yarn workspace backend build
