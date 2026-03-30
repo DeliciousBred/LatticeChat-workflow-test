@@ -15,13 +15,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Enable Corepack (For yarn)
+        run: corepack enable
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
-
-      - name: Enable Corepack (For yarn)
-        run: corepack enable
+          cache: yarn
 
       - name: Install deps
         run: yarn install --immutable
