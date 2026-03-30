@@ -50,9 +50,10 @@ export function useAuthLogic() {
 
     const { data, error } = await authClient.signUp.email(
       {
+        name: "",
         email,
         password,
-        name: username
+        username
       },
       {
         onRequest: (ctx) => {
