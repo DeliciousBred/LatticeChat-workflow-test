@@ -22,9 +22,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: "yarn"
 
       - name: Install
         run: yarn install --immutable
 
-      - name: Build
-        run: yarn build
+      - name: Build Shared
+        run: yarn workspace shared build
+
+      - name: Build Backend
+        run: yarn workspace backend build
+
+      - name: Build Frontend
+        run: yarn workspace frontend build
