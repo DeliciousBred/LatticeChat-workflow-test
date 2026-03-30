@@ -40,7 +40,7 @@ const auth = betterAuth({
     }),
   ],
   baseURL,
-  trustedOrigins: [ENV.ALLOWED_ORIGIN],
+  trustedOrigins: [ENV.ALLOW_ORIGIN],
   database: mongodbAdapter(db, { client }),
   emailAndPassword: {
     enabled: true,
