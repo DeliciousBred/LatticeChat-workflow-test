@@ -4815,7 +4815,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/zxcvbn@npm:^4.4.5":
+"@types/zxcvbn@npm:^4, @types/zxcvbn@npm:^4.4.5":
   version: 4.4.5
   resolution: "@types/zxcvbn@npm:4.4.5"
   checksum: 10c0/b0f2f8a310de61860d66ee24964e9746cadcc166f3b44df384147ebddab186555bef701dcba0a47d04bc80dfa47d5de15f2a08e0abd713fe3a77304342ae68a8
@@ -9394,6 +9394,7 @@ __metadata:
     "@types/mongoose": "npm:^5.11.97"
     "@types/node": "npm:^25.3.5"
     "@types/validator": "npm:^13"
+    "@types/zxcvbn": "npm:^4"
     better-auth: "npm:^1.5.5"
     better-call: "npm:1.3.2"
     cors: "npm:^2.8.6"
@@ -9412,6 +9413,7 @@ __metadata:
     typescript: "npm:^5.9.3"
     validator: "npm:^13.15.26"
     zod: "npm:^4.3.6"
+    zxcvbn: "npm:^4.4.2"
   languageName: unknown
   linkType: soft
 
