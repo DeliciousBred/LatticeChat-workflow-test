@@ -14,15 +14,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: "yarn"
+          cache: yarn
 
       - name: Enable Corepack (For yarn)
         run: corepack enable
 
       - name: Install deps
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
 
       - name: Build
         run: yarn workspace server build
