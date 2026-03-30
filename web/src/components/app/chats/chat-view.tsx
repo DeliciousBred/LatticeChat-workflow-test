@@ -21,6 +21,8 @@ const createMessage = (role: Message['role'], content: string): Message => ({
   content,
 });
 
+// test
+
 export function ChatView({ chat, onTogglePanel }: ChatViewProps) {
   const { sendMessage } = useWebsocket();
   const [messages, setMessages] = useState<Message[]>([
@@ -119,4 +121,3 @@ export function ChatView({ chat, onTogglePanel }: ChatViewProps) {
     </section>
   );
 }
-
