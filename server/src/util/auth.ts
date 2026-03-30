@@ -1,5 +1,3 @@
-import * as z from "zod";
-import validator from "validator";
 import { ENV } from "./env";
 import zxcvbn from "zxcvbn";
 import mongoose from "mongoose";
@@ -13,6 +11,7 @@ import {
   sendForgetPasswordOTP,
 } from "./mailer";
 import { createAuthMiddleware } from "@better-auth/core/api";
+import { authUserAdditionalFields } from "../db/schemas/User";
 
 await connectMongoDB();
 const client = mongoose.connection.getClient();
@@ -56,41 +55,7 @@ const auth = betterAuth({
   },
   user: {
     modelName: "users",
-    additionalFields: {
-      phone: {
-        type: "string",
-        required: false,
-        input: true,
-        validator: {
-          input: z.string().refine(validator.isMobilePhone),
-        },
-      },
-      biography: {
-        type: "string",
-        required: false,
-        input: true,
-      },
-      friends: {
-        type: "string",
-        input: false,
-        default: [],
-      },
-      outgoingFriendRequests: {
-        type: "string",
-        input: false,
-        default: [],
-      },
-      incomingFriendRequests: {
-        type: "string",
-        input: false,
-        default: [],
-      },
-      conversations: {
-        type: "string",
-        input: false,
-        default: [],
-      },
-    },
+    additionalFields: authUserAdditionalFields
   },
 
   hooks: {

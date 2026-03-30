@@ -1,4 +1,7 @@
 import {HydratedDocument, InferSchemaType, Schema} from "mongoose";
+import * as z from "zod";
+import validator from "validator";
+import { DBFieldAttribute } from "@better-auth/core/db";
 
 export const userSchema = new Schema({
   username: {
@@ -66,6 +69,43 @@ export const userSchema = new Schema({
     default: Date.now,
   },
 });
+
+type UserAdditionalFields = { [x: string]: DBFieldAttribute & { default?: any }; }
+export const authUserAdditionalFields: UserAdditionalFields = {
+  phone: {
+    type: "string",
+    required: false,
+    input: true,
+    validator: {
+      input: z.string().refine(validator.isMobilePhone),
+    },
+  },
+  biography: {
+    type: "string",
+    required: false,
+    input: true,
+  },
+  friends: {
+    type: "string",
+    input: false,
+    default: [],
+  },
+  outgoingFriendRequests: {
+    type: "string",
+    input: false,
+    default: [],
+  },
+  incomingFriendRequests: {
+    type: "string",
+    input: false,
+    default: [],
+  },
+  conversations: {
+    type: "string",
+    input: false,
+    default: [],
+  },
+}
 
 export type UserType = InferSchemaType<typeof userSchema>;
 export type UserDocument = HydratedDocument<UserType>;
