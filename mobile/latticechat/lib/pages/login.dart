@@ -1,4 +1,6 @@
+import 'package:animated_gradient_text/animated_gradient_text.dart';
 import 'package:flutter/material.dart';
+import 'package:latticechat/theme.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -7,29 +9,7 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-/*  TODO:
-*   There are a ton of things that need to be moved into
-*   some kinda theme/css-like file. We should probably create
-*   basic assets for text input, circular symbol buttons,
-*   text buttons, sizable fake "glass" labels, and
-*   anything else you can think of tbh.
-*   It'd be a good idea to move the theme info from main.dart
-*   into there as well since that stuff should be universal.
-*   Also, these colors should probably go there, as commented.
-*
-*   TODO:
-*   Gotta add a link to a registration.dart page somewhere
-*   after the big box.
-*/
-
-// These should be moved into a theme file somewhere
-const focusedColor = Color(0xFF34C759);   // for active toggles
-const backgroundColor = Color(0xFF272E33);// offblack
-const primaryColor = Color(0xFFE1E1E1);   // offwhite
-const secondaryColor = Color(0xFFE2E2E2); // underwhite
-const tertiaryColor = Color(0xFFA3A3A3);  // concrete
-const goodboyGreen = Color(0xFF00FF80);   // for confirmations
-const badboyRed = Color(0xFFC04A42);      // for errors
+// TODO: Link the pages with their respective buttons
 
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
@@ -42,12 +22,16 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  // A function meant to be called by the Login button
+  // A function meant to be called by the Sign In button
   void _handleLogin() {
+
     final email = _emailController.text;
     final password = _passwordController.text;
 
-    if (email.isEmpty || password.isEmpty) return; // you forgot something
+    if (email.isEmpty || password.isEmpty) { // you forgot something
+      debugPrint('Sign In button was pressed');
+      return;
+    }; 
 
     // Do something with the data – for now, just show a dialog
     showDialog(
@@ -65,7 +49,16 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  // This is the actual page content
+  // A function meant to be called by the Forgot Password button
+  void _handleForgotPass() {
+    debugPrint('Forgot Pass button was pressed');
+  }
+
+  // A function meant to be called by the No Account button
+  void _handleNoAccount() {
+    debugPrint('No Account button was pressed');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,72 +66,73 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              'LatticeChat',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: primaryColor),
+
+            AnimatedGradientText(
+              text: 'Welcome Back',
+              textStyle: Theme.of(context).textTheme.headlineLarge, // fallback
+              colors: [
+                twCyan,
+                twPurple,
+                twBlue,
+                twCyan
+              ]
             ),
-            const SizedBox(height: 16),   // spacing before the big box (never through I'd miss android studio)
+
+            const SizedBox(height: 16),
+
+            Text(
+              'Sign in to continue your encrypted chats',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            
+            const SizedBox(height: 16),
+
             Container(  // Login label
               width: 300,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                border: Border.all(color: Color(0xFF878D92)),
-                borderRadius: BorderRadius.circular(8),
-              ),
+              padding: EdgeInsets.fromLTRB(16, 32, 16, 8),
+              decoration: AppContainerStyles.genericBox,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+
                   TextField(
                     controller: _emailController,
                     decoration: InputDecoration(
                       labelText: 'Email',
-                      labelStyle: TextStyle(color: primaryColor), // starting label color
-                      floatingLabelStyle: TextStyle(color: focusedColor), // label color when selected
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: primaryColor),  // starting border color
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: focusedColor),  // border color when selected
-                      ),
-                      border: OutlineInputBorder(), // fallback
                     ),
-
                   ),
-                  const SizedBox(height: 12),   // spacing before password
+                  
+                  const SizedBox(height: 16),
+
                   TextField(
                     controller: _passwordController,
                     obscureText: true,  // cuz it's a password
                     decoration: InputDecoration(
                       labelText: 'Password',
-                      labelStyle: TextStyle(color: primaryColor),
-                      floatingLabelStyle: TextStyle(color: focusedColor),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: primaryColor),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: focusedColor),
-                      ),
-                      border: OutlineInputBorder(),
                     ),
                   ),
-                  const SizedBox(height: 8),  // spacing before login button
+
+                  const SizedBox(height: 16),
+
                   ElevatedButton(
                     onPressed: _handleLogin,
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8), // rounded corners
-                        side: BorderSide(color: Color(0xFF00FF80), width: 1),  // outline
-                      ),
-                      backgroundColor: const Color(0xFF272E33),
-                      foregroundColor: Color(0xFF00FF80),
-                    ),
-                    child: const Text('Login'),
+                    style: AppButtonStyles.primaryElevated,
+                    child: const Text('Sign In'),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  TextButton(
+                    onPressed: _handleForgotPass,
+                    child: const Text('Forgot Password?')
                   ),
                 ],
               ),
+            ),
+
+            TextButton(
+              onPressed: _handleNoAccount,
+              child: const Text('Don\'t have an account? Sign up')
             ),
           ],
         ),
