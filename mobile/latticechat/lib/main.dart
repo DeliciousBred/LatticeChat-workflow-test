@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:latticechat/theme.dart';
 // Pages
 import 'package:latticechat/pages/login.dart';
-import 'package:latticechat/pages/register.dart';
+import 'package:latticechat/pages/register.dart'; // temporary until we handle page changes
 
 void main() => runApp(const MyApp());
 
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
 
       title: 'LatticeChat Login',
       theme: darkTheme,
-      home: const RegisterPage(),
+      home: const RegisterPage(), // <-- We swap this out when we're testing a page
     );
   }
 }

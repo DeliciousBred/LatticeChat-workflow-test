@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:latticechat/theme.dart';
-import 'package:tailwind_flutter/tailwind_flutter.dart';
-import 'package:flutter_debouncer/flutter_debouncer.dart';
+import 'package:latticechat/widgets/debounced_validation_field.dart';
+import 'package:latticechat/widgets/password_validation_field.dart';
+import 'package:latticechat/widgets/confirm_password_field.dart';
+import 'package:latticechat/utils/validators.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -11,55 +14,57 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmationController = TextEditingController();
 
-  final Debouncer _emailDebouncer = Debouncer();
-  final Debouncer _usernameDebouncer = Debouncer();
+  String _email = '';
+  String _username = '';
+  String _password = '';
+  String _confirmation = '';
 
-  String _emailStatus = '';
-  String _usernameStatus = '';
-  String _passwordStatus = '';
-  String _confirmationStatus = '';
-  
+  bool _isEmailValid = false;
+  bool _isUsernameValid = false;
+  bool _isPasswordValid = false;
+  bool _isConfirmValid = false;
+
+  bool get _isFormValid => _isEmailValid &&
+                        _isUsernameValid &&
+                        _isPasswordValid &&
+                        _isConfirmValid;
+
   @override
   void dispose() {
-    _emailDebouncer.cancel;
-    _usernameDebouncer.cancel;
-    _emailController.dispose();
-    _usernameController.dispose();
     _passwordController.dispose();
     _confirmationController.dispose();
     super.dispose();
   }
+
+  // Simulated API checks
+  Future<bool> checkEmailAvailability(String email) async {
+    await Future.delayed(Duration(milliseconds: 500));
+    return !email.contains('test');
+  }
+
+  Future<bool> checkUsernameAvailability(String username) async {
+    await Future.delayed(Duration(milliseconds: 500));
+    return !username.contains('admin');
+  }
   
   // A function meant to be called by the Sign Up button
+  // TODO: Consider adding a flicker effect when submitted with an invalid field
   void _handleSignUp() {
-    debugPrint('Sign Up button was pressed');
+    if (!_isFormValid) {
+      debugPrint('Sign Up button was pressed with an invalid form. Do nothing');
+      return;
+    }
+
+    // All fields should be valid and available from in here
+    debugPrint('Email: $_email, Username: $_username, Password: $_password');
   }
 
+  // A function meant to be called by the Already Have Account button
   void _handleHaveAccount() {
     debugPrint('Already Have Account button was pressed');
-  }
-
-  void onEmailChanged(String email) {
-    debugPrint('Email has been changed');
-    debugPrint(email);
-  }
-
-  void onUsernameChanged(String user) {
-    debugPrint('Username has been changed');
-    debugPrint(user);
-  }
-
-  void onPasswordChanged(String pass) {
-    debugPrint('Password has been changed');
-  }
-
-  void onConfirmChanged(String conf) {
-    debugPrint('Confirming Password has been changed');
   }
 
   @override
@@ -89,61 +94,39 @@ class _RegisterPageState extends State<RegisterPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
 
-                  TextField(
-                    controller: _emailController,
-                    onChanged: (email) => onEmailChanged(email),
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                    ),
+                  DebouncedValidationField(
+                    label: 'Email',
+                    validator: isValidEmail,
+                    availabilityChecker: checkEmailAvailability,
+                    onValueChanged: (value) => _email = value,
+                    onValidationChanged: (isValid) => setState(() => _isEmailValid = isValid),
                   ),
 
                   const SizedBox(height: 16),
 
-                  Text(_emailStatus),
-
-                  const SizedBox(height: 16),
-
-                  TextField(
-                    controller: _usernameController,
-                    onChanged: (user) => onUsernameChanged(user),
-                    decoration: InputDecoration(
-                      labelText: 'Username',
-                    ),
+                  DebouncedValidationField(
+                    label: 'Username',
+                    validator: isValidUsername,
+                    availabilityChecker: checkUsernameAvailability,
+                    onValueChanged: (value) => _username = value,
+                    onValidationChanged: (isValid) => setState(() => _isUsernameValid = isValid),
                   ),
 
                   const SizedBox(height: 16),
 
-                  Text(_usernameStatus),
-
-                  const SizedBox(height: 16),
-
-                  TextField(
-                    controller: _passwordController,
-                    obscureText: true,
-                    onChanged: (pass) => onPasswordChanged(pass),
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                    ),
+                  PasswordField(
+                    label: "Password",
+                    onValueChanged: (value) => _password = value,
+                    onValidationChanged: (isValid) => setState(() => _isPasswordValid = isValid),
                   ),
 
                   const SizedBox(height: 16),
 
-                  Text(_passwordStatus),
-
-                  const SizedBox(height: 16),
-
-                  TextField(
-                    controller: _confirmationController,
-                    obscureText: true,
-                    onChanged: (conf) => onConfirmChanged(conf),
-                    decoration: InputDecoration(
-                      labelText: 'Confirm Password',
-                    ),
+                  ConfirmPasswordField(
+                    label: "Confirm Password",
+                    password: _password, // passes current password
+                    onValidationChanged: (isValid) => setState(() => _isConfirmValid = isValid),
                   ),
-
-                  const SizedBox(height: 16),
-
-                  Text(_confirmationStatus),
 
                   const SizedBox(height: 16),
 
