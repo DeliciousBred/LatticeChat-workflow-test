@@ -8,3 +8,4 @@ export async function connectMongoDB() {
 }
 
 export * from './service';
+export * from './models';
