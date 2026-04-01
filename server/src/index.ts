@@ -26,5 +26,5 @@ app.use('/api', apiRouter);
 
 server.listen(ENV.PORT, () => {
   console.log(`Lattice backend now listening at ${ENV.HOST}:${ENV.PORT}`);
-  console.log('Hello Andrew >:)');
+  console.log('Aloha Noah! 😎');
 });
