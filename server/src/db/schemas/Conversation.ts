@@ -58,7 +58,6 @@ conversationSchema.pre(
     if (!this.isNew) return;
 
     for (const memberId of this.members) {
-      console.log(memberId);
       await User.updateOne(
         { _id: memberId },
         { $addToSet: { conversations: this._id } },
