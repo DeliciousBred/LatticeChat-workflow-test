@@ -27,7 +27,7 @@ export const conversationSchema = new Schema({
   owner: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
+    required: false,
   },
   name: {
     type: String,

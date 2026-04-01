@@ -8,9 +8,6 @@ function createConversationName(memberNames: string[]) {
 export async function createConversation(data: actions.CreateConversation) {
   const { ownerId, memberIds } = data;
   const owner = await User.findById(ownerId);
-  if (!owner) {
-    return new Error('User not found');
-  }
 
   const members = await User.find({ _id: { $in: memberIds } });
   const name =
@@ -18,7 +15,7 @@ export async function createConversation(data: actions.CreateConversation) {
     createConversationName(members.map((m) => m.displayUsername ?? m.username));
 
   const conversation = await Conversation.create({
-    owner: owner._id,
+    ...(owner != null && { owner: owner._id }),
     name,
     members: members.map((m) => m._id),
   });
