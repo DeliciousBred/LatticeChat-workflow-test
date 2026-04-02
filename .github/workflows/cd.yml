@@ -30,7 +30,7 @@ jobs:
         run: |
           ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "
             cd /rep/LatticeChat/server && \
-            yarn install && \
+            yarn install --immutable && \
             yarn build && \
             pm2 restart api
           "
@@ -39,7 +39,7 @@ jobs:
         run: |
           ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "
             cd /rep/LatticeChat/web && \
-            yarn install && \
+            yarn install --immutable && \
             export NODE_OPTIONS='--max-old-space-size=4096'
             yarn build && \
             pm2 restart web
