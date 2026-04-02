@@ -58,7 +58,7 @@ export function useAuthLogic() {
         onRequest: () => {
           setIsPending(true);
         },
-        onSuccess: () => {
+        onSuccess: (ctx) => {
           setIsPending(false);
           sendVerificationCode();
           const jwt = ctx.response.headers.get('set-auth-token');
@@ -101,7 +101,7 @@ export function useAuthLogic() {
         onRequest: () => {
           setIsPending(true);
         },
-        onSuccess: () => {
+        onSuccess: (ctx) => {
           setIsPending(false);
           const jwt = ctx.response.headers.get('set-auth-token');
           if (jwt !== null) {
