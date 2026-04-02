@@ -21,9 +21,9 @@ function ForgotPassword() {
   return (
     <main className="min-h-screen bg-black text-zinc-100 flex items-center justify-center px-4 py-16">
       <div className="w-full max-w-lg rounded-2xl border border-zinc-800 bg-zinc-950/80 backdrop-blur-lg p-8 shadow-2xl space-y-6">
-        <ShineBorder shineColor={['#34d399', '#22d3ee']} />
+        <ShineBorder shineColor={['#ef4444', '#3b82f6']} />
         <div className="space-y-2 text-center">
-          <h1 className="text-3xl md:text-3xl font-extrabold bg-linear-to-r from-green-400 via-teal-400 to-cyan-500 animate-gradient bg-clip-text text-transparent">
+          <h1 className="text-3xl md:text-3xl font-extrabold bg-[#E1E1E1] bg-clip-text text-transparent">
             Forgot your password?
           </h1>
           <p className="text-sm text-zinc-400">
@@ -38,7 +38,7 @@ function ForgotPassword() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} noValidate className="space-y-4">
           <div className="space-y-2 text-left bg-transparent">
             <label className="text-sm text-zinc-400">Email</label>
             <input
@@ -47,7 +47,7 @@ function ForgotPassword() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@lattice.com"
               className="w-full bg-zinc-900 text-zinc-200 placeholder:text-zinc-500 border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-blue-500 px-3 py-2"
-              required
+              
             />
             <p className="text-xs text-zinc-500">
               We’ll send a secure reset link to this email if it exists.
@@ -70,7 +70,11 @@ function ForgotPassword() {
             whileTap={{ scale: 0.98 }}
             type="submit"
             disabled={!email || !isValidEmail}
-            className="w-full bg-linear-to-r from-black via-cyan-500 to-black bg-size-[200%_200%] text-white font-semibold py-3 rounded-lg hover:bg-zinc-200 active:translate-y-px transition disabled:opacity-60 animate-gradient"
+            className={`w-full font-semibold py-3 rounded-lg transition active:translate-y-px ${
+              !email || !isValidEmail
+                ? 'bg-white/10 text-white/50 cursor-not-allowed'
+                : 'bg-white text-black hover:bg-zinc-200 hover:-translate-y-px shadow-lg shadow-white/10'
+            }`}
           >
             Send reset link
           </motion.button>
