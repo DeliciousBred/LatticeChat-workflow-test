@@ -1,3 +1,5 @@
+import { Response } from 'express';
+
 export class HttpError extends Error {
   statusCode: number;
 
@@ -6,3 +8,16 @@ export class HttpError extends Error {
     this.statusCode = statusCode;
   }
 }
+
+export const handleHttpError = (error: any, res: Response) => {
+  if (error instanceof HttpError) {
+    res
+      .status(error.statusCode)
+      .send({ success: false, message: error.message });
+    return;
+  }
+
+  res
+    .status(500)
+    .send({ success: true, message: 'Unknown Error: ' + error.message });
+};
