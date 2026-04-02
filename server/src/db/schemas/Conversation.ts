@@ -57,12 +57,10 @@ conversationSchema.pre(
   async function () {
     if (!this.isNew) return;
 
-    for (const memberId of this.members) {
-      await User.updateOne(
-        { _id: memberId },
-        { $addToSet: { conversations: this._id } },
-      );
-    }
+    await User.updateMany(
+      { _id: { $in: this.members } },
+      { $addToSet: { conversations: this._id } },
+    );
   },
 );
 
@@ -70,11 +68,9 @@ conversationSchema.pre(
   'deleteOne',
   { document: true, query: false },
   async function () {
-    for (const memberId of this.members) {
-      await User.updateOne(
-        { _id: memberId },
-        { $pull: { conversations: this._id } },
-      );
-    }
+    await User.updateMany(
+      { conversations: this._id },
+      { $pull: { conversations: this._id } },
+    );
   },
 );
