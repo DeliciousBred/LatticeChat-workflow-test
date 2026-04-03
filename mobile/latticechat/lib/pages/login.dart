@@ -1,5 +1,7 @@
-import 'package:animated_gradient_text/animated_gradient_text.dart';
 import 'package:flutter/material.dart';
+import 'package:latticechat/pages/register.dart';
+import 'package:latticechat/logic/api.dart';
+import 'package:latticechat/logic/models/error.dart';
 import 'package:latticechat/theme.dart';
 
 class LoginPage extends StatefulWidget {
@@ -23,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   // A function meant to be called by the Sign In button
-  void _handleLogin() {
+  void _handleLogin() async {
 
     final email = _emailController.text;
     final password = _passwordController.text;
@@ -31,7 +33,21 @@ class _LoginPageState extends State<LoginPage> {
     if (email.isEmpty || password.isEmpty) { // you forgot something
       debugPrint('Sign In button was pressed');
       return;
-    }; 
+    }
+
+    try {
+      final api = ApiServices();
+      final response = await api.attemptSignIn(email, password);
+
+      print('Sign in successful!');
+
+      var user = response.user;
+      print('User-id: ${user.id}');
+      print("User-name: ${user.username}");
+
+    } on ApiError catch (error) {
+      print(error);
+    }
 
     // Do something with the data – for now, just show a dialog
     showDialog(
@@ -57,6 +73,12 @@ class _LoginPageState extends State<LoginPage> {
   // A function meant to be called by the No Account button
   void _handleNoAccount() {
     debugPrint('No Account button was pressed');
+
+    // Temporary page navigation
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => RegisterPage()),
+    );
   }
 
   @override
@@ -67,16 +89,8 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
 
-            AnimatedGradientText(
-              text: 'Welcome Back',
-              textStyle: Theme.of(context).textTheme.headlineLarge, // fallback
-              colors: [
-                twCyan,
-                twPurple,
-                twBlue,
-                twCyan
-              ]
-            ),
+            // Animated Gradient Text title from theme.dart
+            titleGradientText(context, 'Welcome Back'),
 
             const SizedBox(height: 16),
 
