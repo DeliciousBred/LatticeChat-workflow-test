@@ -8,18 +8,12 @@ class ApiServices {
   static final String _baseUrl = dotenv.env['API_BASE_URL']!;
 
   Future<bool> attemptSignUp(String username, String email, String password) async {
-    http.Response response;
-    Map<String, dynamic>;
-    try {
-      response = await _post('$_baseUrl/auth/sign-up/email', {
-        'name': '',
-        'username': username,
-        'email': email,
-        'password': password
-      });
-    } catch (error) {
-      throw ApiError(type: 'INTERNAL_ERROR', message: 'Internal server error');
-    }
+    final response = await _post('$_baseUrl/auth/sign-up/email', {
+      'name': '',
+      'username': username,
+      'email': email,
+      'password': password
+    });
 
     if (response.statusCode == 200) {
       return true;
@@ -30,20 +24,13 @@ class ApiServices {
   }
 
   Future<SignInResponse> attemptSignIn(String email, String password) async {
-    http.Response response;
-    Map<String, dynamic> body;
-    try {
-      response = await _post('$_baseUrl/auth/sign-in/email', {
-        'email': email,
-        'password': password
-      });
+    final response = await _post('$_baseUrl/auth/sign-in/email', {
+      'email': email,
+      'password': password
+    });
 
-      body = jsonDecode(response.body);
-      body['jwt'] = response.headers['set-auth-token'];
-
-    } catch (error) {
-      throw ApiError(type: 'INTERNAL_ERROR', message: 'Internal server error');
-    }
+    final body = jsonDecode(response.body);
+    body['jwt'] = response.headers['set-auth-token'];
 
     if (response.statusCode == 200) {
       return SignInResponse.fromJson(body)!;
@@ -53,45 +40,30 @@ class ApiServices {
   }
 
   Future<bool> attemptSendEmailVerification(String email) async {
-    http.Response response;
-    Map<String, dynamic> body;
-    try {
-      response = await _post('$_baseUrl/auth/email-otp/send-verification-otp', {
-        'email': email,
-        'type': 'email-verification'
-      });
-
-      body = jsonDecode(response.body);
-
-    } catch (error) {
-      throw ApiError(type: 'INTERNAL_ERROR', message: 'Internal server error');
-    }
+    final response = await _post(
+        '$_baseUrl/auth/email-otp/send-verification-otp', {
+      'email': email,
+      'type': 'email-verification'
+    });
 
     if (response.statusCode == 200) {
       return true;
     } else {
+      final body = jsonDecode(response.body);
       throw ApiError(type: body['code'], message: body['message']);
     }
   }
 
   Future<bool> attemptVerifyEmail(String email, String code) async {
-    http.Response response;
-    Map<String, dynamic> body;
-    try {
-      response = await _post('$_baseUrl/auth/email-otp/verify-email', {
-        'email': email,
-        'otp': code
-      });
-
-      body = jsonDecode(response.body);
-
-    } catch (error) {
-      throw ApiError(type: 'INTERNAL_ERROR', message: 'Internal server error');
-    }
+    final response = await _post('$_baseUrl/auth/email-otp/verify-email', {
+      'email': email,
+      'otp': code
+    });
 
     if (response.statusCode == 200) {
       return true;
     } else {
+      final body = jsonDecode(response.body);
       throw ApiError(type: body['code'], message: body['message']);
     }
   }
