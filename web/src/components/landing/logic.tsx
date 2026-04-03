@@ -21,7 +21,7 @@ export function useDebounce<T>(value: T, delay: number): T {
 }
 
 export function useAuthLogic() {
-  const { refreshUser } = useUser();
+  // const { refreshUser } = useUser();
   
   const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [email, setEmail] = useState('');
@@ -74,7 +74,7 @@ export function useAuthLogic() {
             to: '/verify-email',
           });
 
-          refreshUser();
+          // refreshUser();
         },
         onError: (ctx) => {
           // display the error message
