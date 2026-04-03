@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:latticechat/logic/api.dart';
 import 'dart:async';
 import 'package:latticechat/theme.dart';
 import 'package:latticechat/widgets/debounced_validation_field.dart';
 import 'package:latticechat/widgets/password_validation_field.dart';
 import 'package:latticechat/widgets/confirm_password_field.dart';
 import 'package:latticechat/utils/validators.dart';
+import 'package:latticechat/logic/models/error.dart';
+import 'package:latticechat/pages/login.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -51,10 +54,20 @@ class _RegisterPageState extends State<RegisterPage> {
   
   // A function meant to be called by the Sign Up button
   // TODO: Consider adding a flicker effect when submitted with an invalid field
-  void _handleSignUp() {
+  void _handleSignUp() async {
     if (!_isFormValid) {
       debugPrint('Sign Up button was pressed with an invalid form. Do nothing');
       return;
+    }
+
+    try {
+      final api = ApiServices();
+      final response = await api.attemptSignUp(_username, _email, _password);
+
+      print("Sign up successful!");
+
+    } on ApiError catch (error) {
+      print(error);
     }
 
     // All fields should be valid and available from in here

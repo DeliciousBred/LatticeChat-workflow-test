@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:latticechat/pages/register.dart';
+import 'package:latticechat/logic/api.dart';
+import 'package:latticechat/logic/models/error.dart';
 import 'package:latticechat/theme.dart';
 
 class LoginPage extends StatefulWidget {
@@ -22,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   // A function meant to be called by the Sign In button
-  void _handleLogin() {
+  void _handleLogin() async {
 
     final email = _emailController.text;
     final password = _passwordController.text;
@@ -30,7 +33,21 @@ class _LoginPageState extends State<LoginPage> {
     if (email.isEmpty || password.isEmpty) { // you forgot something
       debugPrint('Sign In button was pressed');
       return;
-    }; 
+    }
+
+    try {
+      final api = ApiServices();
+      final response = await api.attemptSignIn(email, password);
+
+      print('Sign in successful!');
+
+      var user = response.user;
+      print('User-id: ${user.id}');
+      print("User-name: ${user.username}");
+
+    } on ApiError catch (error) {
+      print(error);
+    }
 
     // Do something with the data – for now, just show a dialog
     showDialog(
