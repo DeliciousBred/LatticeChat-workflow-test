@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:latticechat/theme.dart';
 // Pages
-// import 'package:latticechat/pages/login.dart'; // add this back in as the landing page when done(?)
-import 'package:latticechat/pages/register.dart'; // temporary until we handle page changes
+//import 'package:latticechat/pages/login.dart'; // add this back in as the landing page when done(?)
+import 'package:latticechat/pages/register.dart';
 
-void main() => runApp(const MyApp());
+void main() async {
+  await dotenv.load(fileName: ".env");
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
