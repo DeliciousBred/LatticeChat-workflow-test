@@ -1,10 +1,10 @@
-import { Service } from '../types';
+import type { Service } from '../types';
 import { User } from '../../db/models';
 import { isEmailTaken, isUsernameTaken } from '../../db';
 import { handleHttpError } from '../../util/error';
 
 const handleEmailTaken: Service = async (req, res) => {
-  const email = req.body?.email ?? '';
+  const email = req.query?.email as string ?? '';
   
   try {
     const isTaken = await isEmailTaken(email);
@@ -17,7 +17,7 @@ const handleEmailTaken: Service = async (req, res) => {
 };
 
 const handleUsernameTaken: Service = async (req, res) => {
-  const username = req.body?.username ?? '';
+  const username = req.query?.username as string ?? '';
 
   try {
     const isTaken = await isUsernameTaken(username);

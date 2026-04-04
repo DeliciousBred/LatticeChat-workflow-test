@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import type { ZXCVBNFeedback } from 'zxcvbn';
 import { authClient } from '#/lib/auth';
-import { useUser } from '#/lib/context/UseContext';
 
 export function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
@@ -231,12 +230,12 @@ export function useAuthLogic() {
       return;
     }
 
-    fetch(`${import.meta.env.VITE_HTTP_BASE_URL || 'http://localhost:3000'}/auth/email-taken?email=${encodeURIComponent(trimmed)}`)
+    fetch(`${import.meta.env.VITE_BETTER_AUTH_BASE_URL || 'http://localhost:3001/api/auth'}/email-taken?email=${encodeURIComponent(trimmed)}`)
       .then(res => res.json())
       .then(data => {
-        setEmailAvailability(data.taken ? 'Email appears taken.' : 'Email looks available.');
+        setEmailAvailability(data.isTaken ? 'Email appears taken.' : 'Email looks available.');
       })
-      .catch(() => setEmailAvailability('Could not check availability.'))
+      .catch((err) => { console.error('Email check failed:', err); setEmailAvailability('Could not check availability.'); })
       .finally(() => setIsCheckingEmail(false));
   }, [mode, email, debouncedEmail]);
 
@@ -266,12 +265,12 @@ export function useAuthLogic() {
       return;
     }
 
-    fetch(`${import.meta.env.VITE_HTTP_BASE_URL || 'http://localhost:3000'}/auth/username-taken?username=${encodeURIComponent(trimmedUsername)}`)
+    fetch(`${import.meta.env.VITE_BETTER_AUTH_BASE_URL || 'http://localhost:3001/api/auth'}/username-taken?username=${encodeURIComponent(trimmedUsername)}`)
       .then(res => res.json())
       .then(data => {
-        setUsernameAvailability(data.taken ? 'Username appears taken.' : 'Username looks available.');
+        setUsernameAvailability(data.isTaken ? 'Username appears taken.' : 'Username looks available.');
       })
-      .catch(() => setUsernameAvailability('Could not check availability.'))
+      .catch((err) => { console.error('Username check failed:', err); setUsernameAvailability('Could not check availability.'); })
       .finally(() => setIsCheckingUsername(false));
   }, [mode, username, debouncedUsername]);
 
