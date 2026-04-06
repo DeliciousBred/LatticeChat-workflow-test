@@ -17,7 +17,7 @@ const handleGetBasicUserInformation: Service = async (req, res) => {
     res.status(200).send({
       success: true,
       message: 'User successfully found',
-      data: userInformation,
+      basicUserInfo: userInformation,
     });
   } catch (error) {
     handleHttpError(error, res);

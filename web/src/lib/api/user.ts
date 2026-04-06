@@ -62,7 +62,7 @@ export async function fetchBasicUserInfo(
     throw new HttpError(response.status, body.code, body.message);
   }
 
-  return body.data as BasicUserInfo;
+  return body.basicUserInfo as BasicUserInfo;
 }
 
 export async function deleteUser() {
