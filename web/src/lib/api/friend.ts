@@ -1,12 +1,51 @@
-import type { BasicUserInfo } from '#/lib/api/user.ts';
+import { type BasicUserInfo, fetchBasicUserInfo } from '#/lib/api/user.ts';
+import { HttpError } from '#/lib/util/error.ts';
+import { getLocalJWT, getLocalUserId } from '#/lib/util/storage.ts';
 
 export type FriendRequest = {
-  from: BasicUserInfo,
-  to: BasicUserInfo,
+  type: 'incoming' | 'outgoing'
+  associatedUser: BasicUserInfo;
 }
 
 export async function fetchFriendRequests(): Promise<FriendRequest[]> {
-  return [];
+  const senderId = getLocalUserId();
+  const jwt = getLocalJWT();
+  const response = await fetch(
+    import.meta.env.VITE_API_BASE_URL + '/users/' + senderId + '/friend-requests',
+    {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + jwt
+      },
+    },
+  );
+
+  const body = await response.json();
+  if (!response.ok) {
+    throw new HttpError(response.status, body.code, body.message);
+  }
+
+  const friendRequests: FriendRequest[] = [];
+  for (const rawFriendRequest of body.friendRequests) {
+
+    let requestType: 'incoming' | 'outgoing' | null = null;
+    let associatedUser;
+    if(senderId == rawFriendRequest.from) {
+      requestType = 'outgoing';
+      associatedUser = await fetchBasicUserInfo(rawFriendRequest.to);
+    } else if (senderId == rawFriendRequest.to) {
+      requestType = 'incoming';
+      associatedUser = await fetchBasicUserInfo(rawFriendRequest.from);
+    }
+
+    const friendRequest: FriendRequest = {
+      type: requestType ?? 'incoming',
+      associatedUser: associatedUser!,
+    }
+    friendRequests.push(friendRequest);
+  }
+
+  return friendRequests;
 }
 
 export async function sendFriendRequest(userId: string) {}
