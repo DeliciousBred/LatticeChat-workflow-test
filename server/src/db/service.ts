@@ -140,8 +140,8 @@ export async function removeFriendRequest(fromId: string, toId: string) {
   }
 
   const friendRequest = await FriendRequest.findOne({
-    from: target._id,
-    to: sender._id,
+    from: sender._id,
+    to: target._id,
   });
 
   if (friendRequest == null) {
@@ -228,6 +228,7 @@ async function getBasicUserInfo(user: UserDocument | null): Promise<BasicUserInf
 
   return {
     id: user._id.toString(),
+    username: user.username ?? '',
     displayUsername: user.displayUsername ?? '',
     biography: user.biography ?? '',
     createdAt: user.createdAt ?? Date.now(),
