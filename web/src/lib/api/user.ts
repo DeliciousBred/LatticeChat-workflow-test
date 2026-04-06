@@ -4,6 +4,7 @@ import { getLocalJWT, getLocalUserId } from '#/lib/util/storage.ts';
 import { HttpError } from '#/lib/util/error.ts';
 
 export type UserInfo = {
+  id: string;
   username: string;
   usernameDisplay: string;
   email: string;
@@ -14,7 +15,8 @@ export type UserInfo = {
 };
 
 export type BasicUserInfo = {
-  id: string
+  id: string;
+  username: string;
   displayUsername: string;
   biography: string;
   createdAt: Date;
@@ -35,6 +37,7 @@ export async function fetchUserInfo(): Promise<UserInfo | undefined> {
   if (userData == null) return undefined;
 
   return {
+    id: userData.id,
     email: userData.email,
     username: userData.username,
     usernameDisplay: userData.usernameDisplay,

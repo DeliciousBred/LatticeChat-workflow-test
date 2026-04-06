@@ -13,6 +13,7 @@ export type UserRequest = Request & { userInfo?: any };
 // TODO: create type in shared directory
 export type BasicUserInfo = {
   id: string;
+  username: string,
   displayUsername: string;
   biography: string;
   createdAt: Date;
