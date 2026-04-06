@@ -8,9 +8,9 @@ const handleGetBasicUserInformation: Service = async (req, res) => {
 
   try {
     let userInformation;
-    if(byName) {
+    if(byName === 'true') {
       userInformation = await getBasicUserInfoByName(userId);
-    } else {
+    } else if(byName === 'false') {
       userInformation = await getBasicUserInfoById(userId);
     }
 
