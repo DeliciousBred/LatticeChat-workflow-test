@@ -18,19 +18,19 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const refreshFriends = async () => {
     console.log('Refreshing Friends...');
     if (userInfo == null) return;
-    setFriends(await fetchFriends());
+    setFriends(await fetchFriends(userInfo.friendIds));
   }
+  const refreshConversations = async () => {
+    console.log('Refreshing Conversations...');
+    if (userInfo == null) return;
+    setConversations(await fetchConversations(userInfo.conversationIds));
+  };
+
   
   const refreshFriendRequests = async () => {
     console.log('Refreshing Friend Requests...');
     setFriendRequests(await fetchFriendRequests());
   };
-
-  const refreshConversations = async () => {
-    console.log('Refreshing Conversations...');
-    if(userInfo == null) return;
-    setConversations(await fetchConversations(userInfo.conversationIds));
-  }
 
   useEffect(() => {
     (async () => {

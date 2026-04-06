@@ -15,6 +15,6 @@ export async function removeFriendRequest(userId: string) {}
 
 export async function removeFriend(userId: string) {}
 
-export async function fetchFriends(): Promise<BasicUserInfo[]> {
+export async function fetchFriends(friendIds: string[]): Promise<BasicUserInfo[]> {
   return [];
 }
