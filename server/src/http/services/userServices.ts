@@ -1,28 +1,27 @@
 import { Service } from '../types';
-import { deleteUser, isEmailVerified, User } from '../../db';
+import { deleteUser, getBasicUserInfoById, getBasicUserInfoByName } from '../../db';
 import { handleHttpError } from '../../util/error';
 
 const handleGetBasicUserInformation: Service = async (req, res) => {
-  const userId = req.params.user_id;
-  const user = await User.findById(userId);
+  const userId = req.params.user_id?.toString() ?? '';
+  const byName = req.query.byName ?? false;
 
-  if (user == null) {
-    res.status(404).send({ success: false, message: 'User not found' });
-    return;
+  try {
+    let userInformation;
+    if(byName) {
+      userInformation = await getBasicUserInfoByName(userId);
+    } else {
+      userInformation = await getBasicUserInfoById(userId);
+    }
+
+    res.status(200).send({
+      success: true,
+      message: 'User successfully found',
+      data: userInformation,
+    });
+  } catch (error) {
+    handleHttpError(error, res);
   }
-
-  // TODO: create type in shared directory
-  const userInformation = {
-    displayUsername: user.displayUsername,
-    biography: user.biography,
-    createdAt: user.createdAt,
-  };
-
-  res.status(200).send({
-    success: true,
-    message: 'User successfully found',
-    data: userInformation,
-  });
 };
 
 const handleDeleteUser: Service = async (req, res) => {

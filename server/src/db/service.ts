@@ -211,3 +211,26 @@ export async function deleteUser(userId: string) {
 
   await user.deleteOne();
 }
+
+export async function getBasicUserInfoByName(name: string) {
+  const user = await User.findOne({ username: name });
+  return await getBasicUserInfo(user);
+}
+
+export async function getBasicUserInfoById(userId: string) {
+  const user = await User.findById(userId);
+  return await getBasicUserInfo(user);
+}
+
+async function getBasicUserInfo(user: UserDocument | null): Promise<BasicUserInfo> {
+  if (user == null) {
+    throw new HttpError(404, ErrorCodes.USER_NOT_FOUND, 'User not found');
+  }
+
+  return {
+    id: user._id.toString(),
+    displayUsername: user.displayUsername ?? '',
+    biography: user.biography ?? '',
+    createdAt: user.createdAt ?? Date.now(),
+  };
+}

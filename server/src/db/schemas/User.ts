@@ -1,4 +1,4 @@
-import { Schema } from 'mongoose';
+import { Schema, InferSchemaType, HydratedDocument } from 'mongoose';
 import * as z from 'zod';
 import validator from 'validator';
 import { DBFieldAttribute } from '@better-auth/core/db';
@@ -84,6 +84,9 @@ export const userSchema = new Schema(
     },
   },
 );
+
+type User = InferSchemaType<typeof userSchema>;
+export type UserDocument = HydratedDocument<User>;
 
 userSchema.pre(
   'deleteOne',
