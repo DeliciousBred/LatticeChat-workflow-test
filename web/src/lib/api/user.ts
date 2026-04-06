@@ -14,6 +14,7 @@ export type UserInfo = {
 };
 
 export type BasicUserInfo = {
+  id: string
   displayUsername: string;
   biography: string;
   createdAt: Date;
