@@ -56,7 +56,7 @@ export async function fetchBasicUserInfo(
   const body = await response.json();
 
   if (!response.ok) {
-    throw new HttpError(response.status, body.message);
+    throw new HttpError(response.status, body.code, body.message);
   }
 
   return body as BasicUserInfo;
@@ -65,7 +65,6 @@ export async function fetchBasicUserInfo(
 export async function deleteUser() {
   const jwt = getLocalJWT();
   const userId = getLocalUserId();
-  console.log(userId);
 
   const response = await fetch(
     import.meta.env.VITE_API_BASE_URL + '/users/' + userId,
@@ -77,10 +76,9 @@ export async function deleteUser() {
     },
   );
   const body = await response.json();
-  console.log(body);
 
   if (!response.ok) {
-    throw new HttpError(response.status, body.message);
+    throw new HttpError(response.status, body.code, body.message);
   }
 
   return true;

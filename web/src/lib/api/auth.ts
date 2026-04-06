@@ -15,7 +15,7 @@ export async function fetchIsEmailTaken(email: string) {
   );
   const body = await response.json();
   if (!response.ok) {
-    throw new HttpError(response.status, body.message);
+    throw new HttpError(response.status, body.code, body.message);
   }
   return body.isTaken as boolean;
 }
@@ -31,7 +31,7 @@ export async function fetchIsUsernameTaken(username: string) {
   );
   const body = await response.json();
   if (!response.ok) {
-    throw new HttpError(response.status, body.message);
+    throw new HttpError(response.status, body.code, body.message);
   }
   return body.isTaken as boolean;
 }
@@ -51,7 +51,7 @@ export async function fetchIsEmailVerified(email: string) {
   );
   const body = await response.json();
   if (!response.ok) {
-    throw new HttpError(response.status, body.message);
+    throw new HttpError(response.status, body.code, body.message);
   }
   return body.isVerified as boolean;
 }
