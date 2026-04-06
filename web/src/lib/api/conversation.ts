@@ -1,12 +1,14 @@
 import type { BasicUserInfo } from '#/lib/api/user.ts';
 
 export type Conversation = {
+  id: string,
   name: string,
-  ownerId: string,
+  ownerId?: string,
   members: BasicUserInfo[]
 }
 
 export type Message = {
+  id: string,
   senderId: string,
   conversationId: string,
   content: string,
