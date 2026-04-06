@@ -76,6 +76,36 @@ export async function fetchConversations(conversationIds: string[]): Promise<Con
   return conversations;
 }
 
-export async function fetchConversationMessages(conversationId: string): Promise<Message | null>{
-  return null;
+export async function fetchConversationMessages(conversationId: string): Promise<Message[]>{
+  const userId = getLocalUserId();
+  const jwt = getLocalJWT();
+  const response = await fetch(
+    import.meta.env.VITE_API_BASE_URL + '/users/' + userId + '/conversations/' + conversationId + '/messages',
+    {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + jwt,
+      },
+    },
+  );
+  const body = await response.json();
+  if (!response.ok) {
+    throw new HttpError(response.status, body.code, body.message);
+  }
+
+  const rawMessages = body.message;
+
+  let messages: Message[] = [];
+  for (const rawMessage of rawMessages) {
+    const message: Message = {
+      id: rawMessage.id,
+      senderId: rawMessage.sender,
+      conversationId: rawMessage.conversation,
+      content: rawMessage.content,
+      createdAt: rawMessage.createdAt
+    }
+    messages.push(message);
+  }
+
+  return messages;
 }
