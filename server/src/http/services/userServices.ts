@@ -1,8 +1,9 @@
 import { Service } from '../types';
-import { User } from '../../db';
+import { deleteUser, isEmailVerified, User } from '../../db';
+import { handleHttpError } from '../../util/error';
 
 const handleGetBasicUserInformation: Service = async (req, res) => {
-  const userId = req.params.id;
+  const userId = req.params.user_id;
   const user = await User.findById(userId);
 
   if (user == null) {
@@ -12,7 +13,7 @@ const handleGetBasicUserInformation: Service = async (req, res) => {
 
   // TODO: create type in shared directory
   const userInformation = {
-    usernameDisplay: user.displayUsername,
+    displayUsername: user.displayUsername,
     biography: user.biography,
     createdAt: user.createdAt,
   };
@@ -24,4 +25,18 @@ const handleGetBasicUserInformation: Service = async (req, res) => {
   });
 };
 
-export { handleGetBasicUserInformation };
+const handleDeleteUser: Service = async (req, res) => {
+  const userId = req.params.user_id?.toString() ?? '';
+
+  try {
+    await deleteUser(userId);
+    res.status(200).send({
+      success: true,
+      message: 'User successfully deleted',
+    });
+  } catch (error) {
+    handleHttpError(error, res);
+  }
+};
+
+export { handleGetBasicUserInformation, handleDeleteUser };

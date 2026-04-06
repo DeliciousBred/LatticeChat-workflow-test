@@ -193,3 +193,12 @@ export async function isUsernameTaken(username: string) {
   const user = await User.findOne({ username: username });
   return user != null;
 }
+
+export async function deleteUser(userId: string) {
+  const user = await User.findById(userId);
+  if (user == null) {
+    throw new HttpError('User not found', 404);
+  }
+
+  await user.deleteOne();
+}
