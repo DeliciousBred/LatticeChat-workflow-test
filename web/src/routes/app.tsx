@@ -1,5 +1,5 @@
 import { useContext, useMemo, useState } from 'react';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import Sidebar from '#/components/app/sidebar';
 import ChatLayout from '#/components/app/chats/layout';
 import SettingsLayout from '#/components/app/settings/layout';
@@ -10,6 +10,7 @@ type Section = 'chats' | 'friends' | 'calls' | 'settings';
 
 function RouteComponent() {
   const { userInfo } = useUser();
+  const navigate = useNavigate();
 
   const [activeSection, setActiveSection] = useState<Section>('chats');
   const content = useMemo(() => {
@@ -21,6 +22,8 @@ function RouteComponent() {
 
   if (userInfo.isLoading) {
     return <div>Loading!</div>;
+  } else if (!userInfo.data) {
+    navigate({ to: '/' });
   }
 
   return (

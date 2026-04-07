@@ -3,15 +3,13 @@ import type { ReactNode } from 'react';
 import { UserContext } from '../context/UserContext.tsx';
 import type { UserInfoState } from '../context/UserContext.tsx';
 import { fetchUserInfo } from '#/lib/api/user.ts';
-import type { BasicUserInfo, UserInfo } from '#/lib/api/user.ts';
+import type { BasicUserInfo } from '#/lib/api/user.ts';
 import { fetchFriendRequests, fetchFriends } from '#/lib/api/friend.ts';
 import type { FriendRequest } from '#/lib/api/friend.ts';
 import { fetchConversations } from '#/lib/api/conversation.ts';
 import type { Conversation } from '#/lib/api/conversation.ts';
-import { useNavigate } from '@tanstack/react-router';
 
 export function UserProvider({ children }: { children: ReactNode }) {
-  const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState<UserInfoState>({
     data: undefined,
     isLoading: true,
@@ -25,7 +23,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
     const data = await fetchUserInfo();
 
     if (!data) {
-      navigate({ to: '/' });
       setUserInfo({
         data: undefined,
         isLoading: false,
