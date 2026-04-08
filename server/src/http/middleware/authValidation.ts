@@ -1,16 +1,18 @@
 import type { Middleware, UserRequest } from '../types.js';
-import { attemptGetSession } from '../../util/auth.js';
+import auth from '../../util/auth.js';
 
 const attachSession: Middleware = async (req: UserRequest, res, next) => {
-  const token = req.headers.authorization?.replace('Bearer ', '') ?? '';
-  const authResponse = await attemptGetSession(token);
-  const body = (await authResponse.json()) as any;
+  const session = await auth.api.getSession({
+    headers: {
+      Authorization: req.headers.authorization,
+    },
+  });
 
   const requestedUserId = req.params.user_id ?? '';
-  const tokenUserId = body?.user?.id ?? '';
+  const tokenUserId = session?.user.id ?? '';
 
   if (requestedUserId == tokenUserId) {
-    req.userInfo = body?.user ?? null;
+    req.userInfo = session?.user ?? null;
   } else {
     req.userInfo = null;
   }
@@ -27,7 +29,7 @@ const validateUser: Middleware = async (req: UserRequest, res, next) => {
   if (requestedUserId != tokenUserId) {
     res.status(401).send({
       success: false,
-      message: 'Invalid Token'
+      message: 'Invalid Token',
     });
     return;
   }

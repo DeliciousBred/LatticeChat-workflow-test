@@ -1,16 +1,20 @@
-import { Service } from '../types';
-import { deleteUser, getBasicUserInfoById, getBasicUserInfoByName } from '../../db';
+import type * as types from '../types';
+import {
+  deleteUser,
+  getBasicUserInfoById,
+  getBasicUserInfoByName,
+} from '../../db';
 import { handleHttpError } from '../../util/error';
 
-const handleGetBasicUserInformation: Service = async (req, res) => {
+const handleGetBasicUserInformation: types.Service = async (req, res) => {
   const userId = req.params.user_id?.toString() ?? '';
   const byName = req.query.byName ?? false;
 
   try {
     let userInformation;
-    if(byName === 'true') {
+    if (byName === 'true') {
       userInformation = await getBasicUserInfoByName(userId);
-    } else if(byName === 'false') {
+    } else if (byName === 'false') {
       userInformation = await getBasicUserInfoById(userId);
     }
 
@@ -24,7 +28,7 @@ const handleGetBasicUserInformation: Service = async (req, res) => {
   }
 };
 
-const handleDeleteUser: Service = async (req, res) => {
+const handleDeleteUser: types.Service = async (req, res) => {
   const userId = req.params.user_id?.toString() ?? '';
 
   try {

@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Info, Phone, Video } from 'lucide-react';
-import type { Chat } from './layout';
-import { MessageList, type Message, type MessageRole } from './messages';
+import type * as layout from './layout';
+import { MessageList } from './messages';
+import type { Message, MessageRole } from './messages';
 import { ChatInput } from './chat-input';
 import { useWebsocket } from '#/lib/hooks/useWebsocket';
 import { useAsyncEffect } from '#/components/hooks/useAsyncEffect.ts';
@@ -9,7 +10,7 @@ import { fetchConversationMessages } from '#/lib/api/conversation.ts';
 import { useUser } from '#/lib/context/UserContext.tsx';
 
 type ChatViewProps = {
-  chat: Chat;
+  chat: layout.Chat;
   onTogglePanel: () => void;
 };
 
@@ -57,38 +58,11 @@ export function ChatView({ chat, onTogglePanel }: ChatViewProps) {
 
     setMessages(chatMessages);
     setIsLoaded(true);
-  }, [chat.id, messages, isLoaded]);
-
-  useEffect(() => {
-    //setMessages([createMessage('assistant', INITIAL_GREETING)]);
-
-    if (pendingReplyTimerRef.current !== null) {
-      window.clearTimeout(pendingReplyTimerRef.current);
-      pendingReplyTimerRef.current = null;
-    }
-
-    return () => {
-      if (pendingReplyTimerRef.current !== null) {
-        window.clearTimeout(pendingReplyTimerRef.current);
-        pendingReplyTimerRef.current = null;
-      }
-    };
   }, [chat.id]);
 
   const handleSend = useCallback((text: string) => {
     const normalized = text.trim();
     if (!normalized) return;
-
-    setMessages((prev) => [...prev, createMessage('user', normalized)]);
-
-    if (pendingReplyTimerRef.current !== null) {
-      window.clearTimeout(pendingReplyTimerRef.current);
-    }
-
-    pendingReplyTimerRef.current = window.setTimeout(() => {
-      setMessages((prev) => [...prev, createMessage('assistant', 'Bread.')]);
-      pendingReplyTimerRef.current = null;
-    }, 800);
   }, []);
 
   return (

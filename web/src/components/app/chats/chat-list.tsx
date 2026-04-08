@@ -1,4 +1,11 @@
-import { memo, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  memo,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import type { Chat } from './layout';
 import anonImage from '/anonymous.png';
 import { SearchField } from '@heroui/react';
@@ -16,7 +23,7 @@ type ChatRowProps = {
   onSelect: (chat: Chat) => void;
 };
 
-/*const chats: Chat[] = [
+const testData: Chat[] = [
   {
     id: '1',
     user: {
@@ -38,7 +45,7 @@ type ChatRowProps = {
       avatar: anonImage,
     },
   },
-];*/
+];
 
 const ChatRow = memo(function ChatRow({
   chat,
@@ -84,9 +91,10 @@ function normalize(value: string) {
 }
 
 export function ChatList({ onSelect }: ChatListProps) {
-  const { conversations, refreshConversations, refreshUser } = useUser();
-  const [ isLoaded, setIsLoaded ] = useState(false);
-  const [ chats, setChats ] = useState<Chat[]>([]);
+  const { conversations, refreshConversations, refreshUser, friends } =
+    useUser();
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [chats, setChats] = useState<Chat[]>();
 
   useAsyncEffect(async () => {
     await refreshUser();
@@ -95,7 +103,7 @@ export function ChatList({ onSelect }: ChatListProps) {
   });
 
   useEffect(() => {
-    if(!isLoaded) return;
+    if (!isLoaded) return;
 
     const newChats: Chat[] = [];
     for (const conversation of conversations) {
