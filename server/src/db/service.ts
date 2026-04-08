@@ -1,5 +1,5 @@
 import {Conversation, FriendRequest, Message, User} from './models';
-import actions from '@latticechat/shared';
+import actions, { CreateConversation } from '@latticechat/shared';
 import {ErrorCodes, HttpError} from '../util/error';
 import {BasicUserInfo} from "../http/types";
 import {UserDocument} from "./schemas/User";
@@ -117,6 +117,12 @@ export async function createFriendRequest(senderId: string, targetId: string) {
     await targetFriendRequest.deleteOne();
     sender.addFriend(target._id);
     target.addFriend(sender._id);
+
+    // create conversation
+    const createConversationData: CreateConversation = {
+      memberIds: [senderId, targetId],
+    };
+    await createConversation(createConversationData);
 
     return null;
   } else {

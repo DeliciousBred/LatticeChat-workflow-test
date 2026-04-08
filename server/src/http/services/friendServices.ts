@@ -36,12 +36,6 @@ const handleAddFriendRequest: Service = async (req: UserRequest, res) => {
   try {
     const friendRequest = await createFriendRequest(senderId, targetId);
     if (!friendRequest) {
-      // create conversation
-      const createConversationData: CreateConversation = {
-        memberIds: [senderId, targetId],
-      };
-      await createConversation(createConversationData);
-
       res.status(200).send({
         success: true,
         message: 'Friend successfully added',
